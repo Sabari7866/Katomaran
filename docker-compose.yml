@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:5.0
+    container_name: urlshortener-mongo
+    environment:
+      MONGO_INITDB_DATABASE: urlshortener
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - urlshortener-network
+
+  backend:
+    build: ./urlshortener-backend
+    container_name: urlshortener-backend
+    environment:
+      PORT: 5000
+      MONGODB_URI: mongodb://mongodb:27017/urlshortener
+      JWT_SECRET: your_jwt_secret_key_change_this
+      FRONTEND_URL: http://localhost:3000
+      NODE_ENV: development
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongodb
+    networks:
+      - urlshortener-network
+    volumes:
+      - ./urlshortener-backend:/app
+      - /app/node_modules
+
+  frontend:
+    build: ./urlshortener-frontend
+    container_name: urlshortener-frontend
+    environment:
+      REACT_APP_API_URL: http://localhost:5000/api
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - urlshortener-network
+    volumes:
+      - ./urlshortener-frontend:/app
+      - /app/node_modules
+
+volumes:
+  mongo_data:
+
+networks:
+  urlshortener-network:
+    driver: bridge
