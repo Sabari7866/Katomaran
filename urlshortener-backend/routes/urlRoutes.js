@@ -102,6 +102,7 @@ router.get("/", authMiddleware, async (req, res) => {
       totalUrls: total,
     });
   } catch (error) {
+    console.error("Error in GET /api/urls:", error);
     res.status(500).json({
       message: error.message,
     });

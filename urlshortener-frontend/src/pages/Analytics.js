@@ -125,7 +125,8 @@ const Analytics = () => {
           <span className="original-url-value">{url.originalUrl}</span>
           <span className="expiry-badge" style={{ marginTop: "6px" }}>
             Created: {new Date(url.createdAt).toLocaleDateString()} • Expiry:{" "}
-            {url.expiryDate ? new Date(url.expiryDate).toLocaleDateString() : "Never"}
+            {url.expiryDate ? new Date(url.expiryDate).toLocaleDateString() : "Never"} • Last Visited:{" "}
+            {url.lastVisited ? new Date(url.lastVisited).toLocaleString() : "Never"}
           </span>
         </div>
         <div className="analytics-clicks-card">

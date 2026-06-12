@@ -39,6 +39,7 @@ router.get("/dashboard/summary", authMiddleware, async (req, res) => {
       topUrls,
     });
   } catch (error) {
+    console.error("Error in GET /api/analytics/dashboard/summary:", error);
     res.status(500).json({
       message: error.message,
     });

@@ -372,6 +372,7 @@ const Dashboard = () => {
                   <tr>
                     <th>Original Destination</th>
                     <th>Short URL</th>
+                    <th>Created Date</th>
                     <th>Clicks</th>
                     <th>Expiry Date</th>
                     <th>Actions</th>
@@ -396,6 +397,12 @@ const Dashboard = () => {
                           >
                             {BACKEND_URL}/{url.shortCode} <ExternalLink size={12} style={{ display: "inline", marginLeft: "4px" }} />
                           </a>
+                        </td>
+                        <td>
+                          <div className="expiry-badge">
+                            <Calendar size={12} style={{ display: "inline", marginRight: "4px" }} />
+                            {new Date(url.createdAt).toLocaleDateString()}
+                          </div>
                         </td>
                         <td>
                           <div className="clicks-badge">{url.clicks}</div>
