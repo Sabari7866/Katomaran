@@ -46,7 +46,7 @@ const SignupPage = () => {
     <div className="auth-container">
       <div className="auth-card glass-panel">
         <div className="auth-header">
-          <div className="auth-logo">KATOMARAN</div>
+          <div className="auth-logo">SNAPLINK</div>
           <h2 className="auth-title">Create Account</h2>
           <p className="auth-subtitle">Shorten and monitor links instantly</p>
         </div>

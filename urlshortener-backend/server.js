@@ -31,7 +31,7 @@ app.use("/api/analytics", analyticsRoutes);
 // Root path API check
 app.get("/", (req, res) => {
   res.json({
-    message: "Katomaran URL Shortener API Running"
+    message: "SnapLink URL Shortener API Running"
   });
 });
 

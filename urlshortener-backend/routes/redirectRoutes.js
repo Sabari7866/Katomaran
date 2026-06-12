@@ -30,7 +30,7 @@ router.get("/:shortCode", async (req, res) => {
             <div class="card">
               <h1>Link Not Found 🔍</h1>
               <p>Sorry, the link you are trying to access does not exist or has been deleted.</p>
-              <a href="${frontendUrl}">Go to Katomaran</a>
+              <a href="${frontendUrl}">Go to SnapLink</a>
             </div>
           </body>
         </html>
@@ -58,7 +58,7 @@ router.get("/:shortCode", async (req, res) => {
             <div class="card">
               <h1>Link Expired ⏰</h1>
               <p>Sorry, this shortened URL has reached its expiration date and is no longer active.</p>
-              <a href="${frontendUrl}">Go to Katomaran</a>
+              <a href="${frontendUrl}">Go to SnapLink</a>
             </div>
           </body>
         </html>

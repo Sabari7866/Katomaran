@@ -1,4 +1,4 @@
-// Katomaran URL Shortener Frontend
+// SnapLink URL Shortener Frontend
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";

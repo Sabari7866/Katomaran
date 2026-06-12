@@ -1,6 +1,6 @@
-# 🔗 Katomaran — URL Shortener with Analytics
+# 🔗 SnapLink — URL Shortener with Analytics
 
-A full-stack **MERN** (MongoDB, Express, React, Node.js) URL Shortener application with real-time analytics, QR code generation, custom aliases, and link expiry tracking. Built for the Katomaran Hackathon.
+A full-stack **MERN** (MongoDB, Express, React, Node.js) URL Shortener application with real-time analytics, QR code generation, custom aliases, and link expiry tracking. Built for the Hackathon.
 
 ![Node.js](https://img.shields.io/badge/Node.js-18+-339933?logo=node.js&logoColor=white)
 ![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)
@@ -185,7 +185,7 @@ A full-stack **MERN** (MongoDB, Express, React, Node.js) URL Shortener applicati
 ## 📁 Project Structure
 
 ```
-Katomaran/
+SnapLink/
 ├── README.md                          # This file
 ├── .gitignore                         # Root gitignore
 ├── .env.example                       # Environment variables reference
@@ -247,8 +247,8 @@ Katomaran/
 
 #### 1. Clone the repository
 ```bash
-git clone https://github.com/Sabari7866/Katomaran.git
-cd Katomaran
+git clone https://github.com/Sabari7866/SnapLink.git
+cd SnapLink
 ```
 
 #### 2. Start MongoDB
@@ -449,4 +449,4 @@ ISC
 
 ---
 
-*This project is a part of a hackathon run by [https://katomaran.com](https://katomaran.com)*
+*This project is a part of a hackathon.*

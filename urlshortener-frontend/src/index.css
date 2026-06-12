@@ -111,3 +111,42 @@ input:focus, select:focus {
   border-color: #6366f1;
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
 }
+
+/* Premium Floating Background Glows */
+body::before, body::after {
+  content: "";
+  position: fixed;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  filter: blur(120px);
+  z-index: -2;
+  opacity: 0.18;
+  pointer-events: none;
+}
+
+body::before {
+  background: radial-gradient(circle, #6366f1 0%, transparent 70%);
+  top: -150px;
+  left: -150px;
+  animation: drift-aurora-1 25s infinite alternate ease-in-out;
+}
+
+body::after {
+  background: radial-gradient(circle, #06b6d4 0%, transparent 70%);
+  bottom: -150px;
+  right: -150px;
+  animation: drift-aurora-2 30s infinite alternate ease-in-out;
+}
+
+@keyframes drift-aurora-1 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(250px, 150px) scale(1.3) rotate(45deg); }
+  100% { transform: translate(120px, 300px) scale(0.95) rotate(90deg); }
+}
+
+@keyframes drift-aurora-2 {
+  0% { transform: translate(0, 0) scale(1.1); }
+  50% { transform: translate(-200px, -250px) scale(0.85) rotate(-60deg); }
+  100% { transform: translate(-80px, -120px) scale(1.25) rotate(-120deg); }
+}
