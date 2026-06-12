@@ -2,12 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import {
   ArrowLeft,
-  Calendar,
   Clock,
   ExternalLink,
   Laptop,
   Loader2,
-  MousePointerClick,
   Smartphone,
   Tablet,
 } from "lucide-react";
