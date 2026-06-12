@@ -80,39 +80,7 @@ const Dashboard = () => {
   const [expandedUrlId, setExpandedUrlId] = useState(null);
   const [inlineAnalytics, setInlineAnalytics] = useState({});
   const [inlineLoading, setInlineLoading] = useState(false);
-  const [liveActivities, setLiveActivities] = useState([
-    { id: 1, type: "click", location: "Mumbai, India", device: "Mobile", browser: "Chrome", time: "Just now", target: "portfolio" },
-    { id: 2, type: "redirect", location: "New York, USA", device: "Desktop", browser: "Safari", time: "1 min ago", target: "github" },
-    { id: 3, type: "click", location: "London, UK", device: "Tablet", browser: "Firefox", time: "3 mins ago", target: "resume" },
-  ]);
 
-  useEffect(() => {
-    const locations = ["New York, USA", "London, UK", "Mumbai, India", "Tokyo, Japan", "Paris, France", "Sydney, Australia", "Berlin, Germany"];
-    const browsers = ["Chrome", "Safari", "Firefox", "Edge"];
-    const devices = ["Mobile", "Desktop", "Tablet"];
-    const targets = ["promo", "docs", "app", "blog", "portfolio", "social"];
-    
-    const interval = setInterval(() => {
-      const newActivity = {
-        id: Date.now(),
-        type: Math.random() > 0.35 ? "click" : "redirect",
-        location: locations[Math.floor(Math.random() * locations.length)],
-        browser: browsers[Math.floor(Math.random() * browsers.length)],
-        device: devices[Math.floor(Math.random() * devices.length)],
-        target: targets[Math.floor(Math.random() * targets.length)],
-        time: "Just now",
-      };
-      setLiveActivities(prev => {
-        const updated = [newActivity, ...prev.map(act => ({
-          ...act, 
-          time: act.time === "Just now" ? "1 min ago" : act.time.includes("min") ? `${parseInt(act.time) + 1} mins ago` : act.time
-        }))];
-        return updated.slice(0, 4); // Keep last 4
-      });
-    }, 12000);
-    
-    return () => clearInterval(interval);
-  }, []);
 
   const handleToggleExpand = async (urlId) => {
     if (expandedUrlId === urlId) {
@@ -346,12 +314,7 @@ const Dashboard = () => {
       </section>
 
       {/* Shortener Container */}
-      {/* Dashboard Layout Grid */}
-      <div className="dashboard-layout-grid">
-        {/* Left Column: Shortener and URL list */}
-        <div className="dashboard-main-col">
-          {/* Shortener Container */}
-          <section className="shortener-section glass-panel">
+      <section className="shortener-section glass-panel">
             <h2 className="section-title">Shorten a New Link</h2>
             
             {formError && <div className="auth-error" style={{ marginBottom: "20px" }}>{formError}</div>}
@@ -673,44 +636,6 @@ const Dashboard = () => {
               </>
             )}
           </section>
-        </div>
-
-        {/* Right Column: Live Monitor & Info */}
-        <aside className="dashboard-sidebar-col">
-          {/* Live Activity Monitor */}
-          <div className="sidebar-card glass-panel">
-            <h3 className="sidebar-card-title">
-              <Activity size={18} className="pulse-slow" style={{ marginRight: "8px", color: "#10b981", verticalAlign: "middle" }} />
-              Live Redirect Monitor
-            </h3>
-            <div className="activity-stream">
-              {liveActivities.map((act) => (
-                <div key={act.id} className="activity-item animate-fade-in">
-                  <div className={`activity-dot ${act.type === "click" ? "green" : "purple"}`} />
-                  <div className="activity-details">
-                    <span className="activity-desc">
-                      New <strong>{act.type}</strong> from {act.location}
-                    </span>
-                    <span className="activity-meta">
-                      Target: /{act.target} • {act.browser} ({act.device})
-                    </span>
-                  </div>
-                  <span className="activity-time">{act.time}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Rebranding Info Panel */}
-          <div className="sidebar-card glass-panel promo-card">
-            <h3 className="sidebar-card-title text-gradient">SnapLink Premium</h3>
-            <p className="promo-text">
-              Fully optimized for low latency link redirection, detailed device-analytics logging, and custom short aliases.
-            </p>
-            <div className="promo-badge">Live Sandbox</div>
-          </div>
-        </aside>
-      </div>
 
       {/* QR Code Modal */}
       {qrModalUrl && (
