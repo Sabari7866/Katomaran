@@ -104,7 +104,7 @@ const Dashboard = () => {
       await createUrl({
         originalUrl,
         customAlias: customAlias || undefined,
-        expiryDate: expiryDate || undefined,
+        expiryDate: expiryDate ? new Date(expiryDate).toISOString() : undefined,
       });
 
       // Clear input form
