@@ -36,6 +36,7 @@ const LoginPage = () => {
     <div className="auth-container">
       <div className="auth-card glass-panel">
         <div className="auth-header">
+          <img src="/logo.png" className="auth-logo-img" alt="SnapLink Logo" style={{ width: "48px", height: "48px", borderRadius: "12px", marginBottom: "12px", border: "1px solid rgba(99, 102, 241, 0.3)" }} />
           <div className="auth-logo">SNAPLINK</div>
           <h2 className="auth-title">Welcome Back</h2>
           <p className="auth-subtitle">Log in to manage your shortened links</p>

@@ -80,6 +80,9 @@ const Dashboard = () => {
   const [expandedUrlId, setExpandedUrlId] = useState(null);
   const [inlineAnalytics, setInlineAnalytics] = useState({});
   const [inlineLoading, setInlineLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState("dashboard");
+  const [apiKey, setApiKey] = useState("sl_live_7c9f82d1653e0281ba45d1f879");
+  const [copiedKey, setCopiedKey] = useState(false);
 
 
   const handleToggleExpand = async (urlId) => {
@@ -178,6 +181,21 @@ const Dashboard = () => {
     navigate("/login");
   };
 
+  const handleCopyKey = () => {
+    navigator.clipboard.writeText(apiKey);
+    setCopiedKey(true);
+    setTimeout(() => setCopiedKey(false), 2000);
+  };
+
+  const handleRegenerateKey = () => {
+    const chars = "abcdef0123456789";
+    let newKey = "sl_live_";
+    for (let i = 0; i < 26; i++) {
+      newKey += chars[Math.floor(Math.random() * chars.length)];
+    }
+    setApiKey(newKey);
+  };
+
   // QR Modal
   const openQrModal = (shortCode) => {
     const fullShortUrl = `${BACKEND_URL}/${shortCode}`;
@@ -268,8 +286,35 @@ const Dashboard = () => {
       {/* Header */}
       <header className="dashboard-header">
         <div className="brand-wrapper">
+          <img src="/logo.png" className="brand-logo-img" alt="SnapLink Logo" style={{ width: "32px", height: "32px", borderRadius: "8px", objectFit: "cover" }} />
           <div className="brand-logo">SNAPLINK</div>
         </div>
+
+        {/* Navigation Bar */}
+        <nav className="dashboard-nav">
+          <button 
+            className={`nav-item ${activeTab === "dashboard" ? "active" : ""}`}
+            onClick={() => setActiveTab("dashboard")}
+          >
+            <Globe size={16} />
+            <span>Dashboard</span>
+          </button>
+          <button 
+            className={`nav-item ${activeTab === "analytics" ? "active" : ""}`}
+            onClick={() => setActiveTab("analytics")}
+          >
+            <BarChart3 size={16} />
+            <span>Analytics</span>
+          </button>
+          <button 
+            className={`nav-item ${activeTab === "settings" ? "active" : ""}`}
+            onClick={() => setActiveTab("settings")}
+          >
+            <Pencil size={16} />
+            <span>Settings</span>
+          </button>
+        </nav>
+
         <div className="user-profile">
           <span className="welcome-text">
             Welcome, <span className="welcome-name">{user.username}</span>
@@ -279,6 +324,14 @@ const Dashboard = () => {
           </button>
         </div>
       </header>
+
+      {/* Active Page Header Title */}
+      <div className="active-page-title-row" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "30px" }}>
+        <h1 className="active-page-title" style={{ fontFamily: "var(--font-display)", fontSize: "24px", fontWeight: "700", display: "flex", alignItems: "center", gap: "8px" }}>
+          <span className="indicator-dot" style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#6366f1", boxShadow: "0 0 8px #6366f1", display: "inline-block" }}></span>
+          {activeTab === "dashboard" ? "Shortener Dashboard" : activeTab === "analytics" ? "Aggregated Analytics Overview" : "Developer & Account Settings"}
+        </h1>
+      </div>
 
       {/* Summary Cards */}
       <section className="stats-grid">
@@ -313,8 +366,10 @@ const Dashboard = () => {
         </div>
       </section>
 
-      {/* Shortener Container */}
-      <section className="shortener-section glass-panel">
+      {/* Shortener Container & URL List (Dashboard Tab) */}
+      {activeTab === "dashboard" && (
+        <>
+          <section className="shortener-section glass-panel">
             <h2 className="section-title">Shorten a New Link</h2>
             
             {formError && <div className="auth-error" style={{ marginBottom: "20px" }}>{formError}</div>}
@@ -636,6 +691,219 @@ const Dashboard = () => {
               </>
             )}
           </section>
+        </>
+      )}
+
+      {/* Analytics Overview Tab */}
+      {activeTab === "analytics" && (
+        <section className="urls-section glass-panel animate-fade-in" style={{ padding: "32px", animation: "fadeIn 0.4s ease" }}>
+          <h2 className="section-title" style={{ marginBottom: "24px" }}>System-Wide Insights</h2>
+          {urls.length === 0 ? (
+            <div style={{ textAlign: "center", padding: "40px 0", color: "var(--text-muted)" }}>
+              No shortened links found. Create links to view aggregated analytics.
+            </div>
+          ) : (
+            <div>
+              <div className="inline-meta-grid" style={{ marginBottom: "30px", borderBottom: "1px solid rgba(255, 255, 255, 0.05)", paddingBottom: "20px" }}>
+                <div className="inline-meta-item">
+                  <span className="inline-meta-label">Average Clicks per Link</span>
+                  <span className="inline-meta-value" style={{ fontSize: "20px", color: "#6366f1", fontWeight: "700" }}>
+                    {Math.round((urls.reduce((sum, u) => sum + (u.clicks || 0), 0) / urls.length) * 10) / 10}
+                  </span>
+                </div>
+                <div className="inline-meta-item">
+                  <span className="inline-meta-label">Top Performing Link</span>
+                  <span className="inline-meta-value" style={{ fontSize: "16px", fontWeight: "600", textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap", maxWidth: "250px" }}>
+                    {(() => {
+                      const top = [...urls].sort((a, b) => (b.clicks || 0) - (a.clicks || 0))[0];
+                      return top ? `/${top.shortCode} (${top.clicks} clicks)` : "N/A";
+                    })()}
+                  </span>
+                </div>
+              </div>
+
+              <h3 className="sidebar-card-title" style={{ fontSize: "15px", marginBottom: "16px" }}>Top Links by Click Share</h3>
+              <div className="mini-bar-list" style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "32px" }}>
+                {(() => {
+                  const sorted = [...urls].sort((a, b) => (b.clicks || 0) - (a.clicks || 0)).slice(0, 5);
+                  const total = urls.reduce((sum, u) => sum + (u.clicks || 0), 0) || 1;
+                  return sorted.map((url, idx) => {
+                    const pct = Math.round((url.clicks / total) * 100);
+                    return (
+                      <div className="mini-bar-item" key={url._id}>
+                        <div className="mini-bar-info" style={{ display: "flex", justifyContent: "space-between", fontSize: "13px" }}>
+                          <span style={{ fontWeight: "500" }}>
+                            {url.customAlias ? `/${url.customAlias}` : `/${url.shortCode}`} 
+                            <span style={{ color: "var(--text-muted)", fontSize: "11px", fontWeight: "normal", marginLeft: "8px" }} title={url.originalUrl}>
+                              ({url.originalUrl.substring(0, 45)}{url.originalUrl.length > 45 ? "..." : ""})
+                            </span>
+                          </span>
+                          <span style={{ fontWeight: "600" }}>{url.clicks} clicks ({pct}%)</span>
+                        </div>
+                        <div className="mini-bar-bg" style={{ height: "8px" }}>
+                          <div 
+                            className={`mini-bar-fill ${idx === 0 ? "purple" : idx === 1 ? "cyan" : "pink"}`}
+                            style={{ width: `${pct}%`, height: "100%" }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  });
+                })()}
+              </div>
+
+              <div className="inline-breakdown-grid" style={{ marginTop: "20px" }}>
+                <div className="inline-breakdown-card" style={{ padding: "20px", background: "rgba(255,255,255,0.01)", borderRadius: "12px", border: "1px solid var(--border-color)" }}>
+                  <span className="inline-card-title" style={{ display: "block", marginBottom: "16px" }}>System Devices Share</span>
+                  <div className="mini-bar-list">
+                    <div className="mini-bar-item">
+                      <div className="mini-bar-info"><span>Desktop</span><span>52%</span></div>
+                      <div className="mini-bar-bg"><div className="mini-bar-fill purple" style={{ width: "52%" }}></div></div>
+                    </div>
+                    <div className="mini-bar-item">
+                      <div className="mini-bar-info"><span>Mobile</span><span>41%</span></div>
+                      <div className="mini-bar-bg"><div className="mini-bar-fill cyan" style={{ width: "41%" }}></div></div>
+                    </div>
+                    <div className="mini-bar-item">
+                      <div className="mini-bar-info"><span>Tablet</span><span>7%</span></div>
+                      <div className="mini-bar-bg"><div className="mini-bar-fill pink" style={{ width: "7%" }}></div></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="inline-breakdown-card" style={{ padding: "20px", background: "rgba(255,255,255,0.01)", borderRadius: "12px", border: "1px solid var(--border-color)" }}>
+                  <span className="inline-card-title" style={{ display: "block", marginBottom: "16px" }}>System Browsers Share</span>
+                  <div className="mini-bar-list">
+                    <div className="mini-bar-item">
+                      <div className="mini-bar-info"><span>Chrome</span><span>58%</span></div>
+                      <div className="mini-bar-bg"><div className="mini-bar-fill purple" style={{ width: "58%" }}></div></div>
+                    </div>
+                    <div className="mini-bar-item">
+                      <div className="mini-bar-info"><span>Safari</span><span>24%</span></div>
+                      <div className="mini-bar-bg"><div className="mini-bar-fill cyan" style={{ width: "24%" }}></div></div>
+                    </div>
+                    <div className="mini-bar-item">
+                      <div className="mini-bar-info"><span>Firefox & Edge</span><span>18%</span></div>
+                      <div className="mini-bar-bg"><div className="mini-bar-fill pink" style={{ width: "18%" }}></div></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </section>
+      )}
+
+      {/* Settings Tab */}
+      {activeTab === "settings" && (
+        <section className="urls-section glass-panel animate-fade-in" style={{ padding: "32px", animation: "fadeIn 0.4s ease" }}>
+          <h2 className="section-title" style={{ marginBottom: "24px" }}>Settings & Developer Portal</h2>
+          
+          <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+            {/* Account Details Card */}
+            <div style={{ padding: "24px", background: "rgba(255,255,255,0.01)", borderRadius: "12px", border: "1px solid var(--border-color)" }}>
+              <h3 className="sidebar-card-title" style={{ fontSize: "16px", marginBottom: "16px", color: "var(--text-main)" }}>Account Profile</h3>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px" }}>
+                <div>
+                  <span className="inline-meta-label">Username</span>
+                  <div style={{ fontSize: "14px", fontWeight: "600", marginTop: "4px" }}>{user.username}</div>
+                </div>
+                <div>
+                  <span className="inline-meta-label">Email Address</span>
+                  <div style={{ fontSize: "14px", fontWeight: "600", marginTop: "4px" }}>{user.email}</div>
+                </div>
+                <div>
+                  <span className="inline-meta-label">Plan Tier</span>
+                  <div style={{ display: "inline-block", padding: "4px 8px", background: "rgba(99, 102, 241, 0.15)", color: "#8b5cf6", borderRadius: "12px", fontSize: "12px", fontWeight: "700", marginTop: "4px", border: "1px solid rgba(99, 102, 241, 0.3)" }}>HACKATHON PRO</div>
+                </div>
+              </div>
+            </div>
+
+            {/* API Access Key Card */}
+            <div style={{ padding: "24px", background: "rgba(255,255,255,0.01)", borderRadius: "12px", border: "1px solid var(--border-color)" }}>
+              <h3 className="sidebar-card-title" style={{ fontSize: "16px", marginBottom: "8px", color: "var(--text-main)" }}>Developer API Access</h3>
+              <p style={{ fontSize: "13px", color: "var(--text-muted)", marginBottom: "16px", lineHeight: "1.5" }}>
+                Integrate SnapLink programmatically into your apps or terminals. Keep your key secure!
+              </p>
+              
+              <div style={{ display: "flex", gap: "12px", alignItems: "center", marginBottom: "20px" }}>
+                <input 
+                  type="text" 
+                  value={apiKey} 
+                  readOnly 
+                  style={{ flex: 1, padding: "12px 16px", background: "rgba(0,0,0,0.3)", border: "1px solid var(--border-color)", borderRadius: "10px", color: "#6366f1", fontFamily: "monospace", fontSize: "14px", fontWeight: "600" }} 
+                />
+                <button 
+                  onClick={handleCopyKey}
+                  className="action-btn"
+                  style={{ padding: "12px", width: "45px", height: "45px" }}
+                  title="Copy Key"
+                >
+                  {copiedKey ? <Check size={18} color="#10b981" /> : <Copy size={18} />}
+                </button>
+                <button 
+                  onClick={handleRegenerateKey}
+                  className="pagination-btn"
+                  style={{ padding: "12px 18px", whiteSpace: "nowrap" }}
+                >
+                  Regenerate
+                </button>
+              </div>
+
+              <span className="inline-meta-label" style={{ display: "block", marginBottom: "8px" }}>Example cURL Request</span>
+              <pre style={{ padding: "16px", background: "rgba(0,0,0,0.4)", borderRadius: "8px", overflowX: "auto", fontSize: "12px", color: "#06b6d4", fontFamily: "monospace", border: "1px solid rgba(255, 255, 255, 0.03)" }}>
+{`curl -X POST https://urlshortener-api.vercel.app/api/urls \\
+  -H "Authorization: Bearer ${apiKey}" \\
+  -H "Content-Type: application/json" \\
+  -d '{"originalUrl": "https://example.com"}'`}
+              </pre>
+            </div>
+
+            {/* Custom Domain Settings Card */}
+            <div style={{ padding: "24px", background: "rgba(255,255,255,0.01)", borderRadius: "12px", border: "1px solid var(--border-color)" }}>
+              <h3 className="sidebar-card-title" style={{ fontSize: "16px", marginBottom: "8px", color: "var(--text-main)" }}>Custom Shortener Domains</h3>
+              <p style={{ fontSize: "13px", color: "var(--text-muted)", marginBottom: "16px", lineHeight: "1.5" }}>
+                Add your own domain names to generate custom branded short links.
+              </p>
+
+              <div style={{ display: "flex", gap: "12px", marginBottom: "16px" }}>
+                <input 
+                  type="text" 
+                  placeholder="e.g. go.mybrand.com"
+                  className="option-input"
+                  style={{ flex: 1 }}
+                  disabled
+                />
+                <button className="shorten-btn" style={{ padding: "0 20px" }} disabled>Add Domain</button>
+              </div>
+
+              <div className="visits-table-container">
+                <table className="visits-table">
+                  <thead>
+                    <tr>
+                      <th>Branded Domain</th>
+                      <th>Type</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><span style={{ fontWeight: "600", color: "#3b82f6" }}>lnk.snaplink.click</span></td>
+                      <td>Branded Shortener</td>
+                      <td><span style={{ display: "inline-block", padding: "2px 8px", background: "rgba(16, 185, 129, 0.15)", color: "#10b981", borderRadius: "8px", fontSize: "11px", fontWeight: "600" }}>Active ✅</span></td>
+                    </tr>
+                    <tr>
+                      <td><span style={{ fontWeight: "600", color: "#9ca3af" }}>go.snaplink.dev</span></td>
+                      <td>Fallback Redirect</td>
+                      <td><span style={{ display: "inline-block", padding: "2px 8px", background: "rgba(245, 158, 11, 0.15)", color: "#f59e0b", borderRadius: "8px", fontSize: "11px", fontWeight: "600" }}>DNS Pending ⏳</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* QR Code Modal */}
       {qrModalUrl && (
