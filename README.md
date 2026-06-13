@@ -11,7 +11,7 @@
 ## 📹 Demo Video & Visual Verification
 
 > ⚠️ **Note on Video Demonstration:**
-> As this project is fully automated and verified via advanced AI agent workflows, we have provided a complete step-by-step browser walkthrough recording along with interactive visual verification screenshots captured directly from our testing sessions.
+> As this project is fully automated and verified via advanced AI agent workflows, I have provided a complete step-by-step browser walkthrough recording along with interactive visual verification screenshots captured directly from our testing sessions.
 
 **[Click here to view the full Walkthrough Document with Demo Videos and Verification Screenshots](./walkthrough.md)**
 
