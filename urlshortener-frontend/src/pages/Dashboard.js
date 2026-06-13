@@ -288,7 +288,7 @@ const Dashboard = () => {
         
         {formError && <div className="auth-error" style={{ marginBottom: "20px" }}>{formError}</div>}
         
-        <form onSubmit={handleShorten} className="shortener-form">
+        <form onSubmit={handleShorten} className="shortener-form" autoComplete="off">
           <div className="input-main-group">
             <div className="input-main-wrapper">
               <Link2 className="input-main-icon" />
@@ -300,6 +300,7 @@ const Dashboard = () => {
                 onChange={(e) => setOriginalUrl(e.target.value)}
                 required
                 disabled={shortening}
+                autoComplete="off"
               />
             </div>
             <button type="submit" className="shorten-btn" disabled={shortening || !originalUrl}>
@@ -325,6 +326,7 @@ const Dashboard = () => {
                 value={customAlias}
                 onChange={(e) => setCustomAlias(e.target.value)}
                 disabled={shortening}
+                autoComplete="off"
               />
             </div>
 
@@ -349,6 +351,7 @@ const Dashboard = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={shortening}
+                autoComplete="new-password"
               />
             </div>
           </div>
