@@ -31,19 +31,27 @@ We have successfully implemented optional password security for shortened links,
 
 The changes have been thoroughly validated with the browser subagent:
 
-```carousel
+### 📸 Visual Verification Gallery
+
+#### 1. Always Open Options Form
 ![Always Open Options Form](docs/screenshots/dashboard_options_visible_1781326220961.png)
-<!-- slide -->
+
+#### 2. Shortened Link with Lock Icon
 ![Shortened Link with Lock Icon](docs/screenshots/secglow3_created_1781326310545.png)
-<!-- slide -->
+
+#### 3. Analytics Dropdown Link Switcher
 ![Analytics Dropdown Link Switcher](docs/screenshots/analytics_page_redesign_1781322709651.png)
-<!-- slide -->
+
+#### 4. Premium Lock Screen
 ![Premium Lock Screen](docs/screenshots/secglow3_password_page_1781326749944.png)
-<!-- slide -->
+
+#### 5. Incorrect Password Error Glow
 ![Incorrect Password Error Glow](docs/screenshots/wrong_password_error_1781326823763.png)
-<!-- slide -->
+
+#### 6. Success Redirect to Destination
 ![Success Redirect to Destination](docs/screenshots/google_redirected_success_1781328223213.png)
-```
+
+---
 
 ### 🎬 Browser Session Video Recordings
 
