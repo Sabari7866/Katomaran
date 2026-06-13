@@ -284,11 +284,18 @@ function getPasswordPage(shortCode, errorMsg = "") {
         
         <div class="form-group">
           <label for="password">Enter Password</label>
-          <input type="password" id="password" name="password" class="input-field" placeholder="••••••••" required autofocus autocomplete="new-password">
+          <input type="password" id="password" name="password" class="input-field" placeholder="••••••••" required autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly')">
         </div>
         
-        <button type="submit" class="submit-btn">Unlock & Redirect</button>
+        <button type="submit" class="submit-btn">Unlock &amp; Redirect</button>
       </form>
+      <script>
+        // Extra guard: clear the field on page load to prevent autofill
+        window.addEventListener('DOMContentLoaded', function() {
+          var p = document.getElementById('password');
+          if (p) { p.value = ''; p.focus(); }
+        });
+      </script>
       
       <div class="footer-brand">
         Secured by <span>SnapLink</span>

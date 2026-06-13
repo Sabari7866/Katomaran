@@ -288,7 +288,10 @@ const Dashboard = () => {
         
         {formError && <div className="auth-error" style={{ marginBottom: "20px" }}>{formError}</div>}
         
-        <form onSubmit={handleShorten} className="shortener-form" autoComplete="off" data-lpignore="true">
+        {/* Hidden honeypot fields — trick the browser into autofilling these instead of the real inputs */}
+        <input type="text" name="fake_username" style={{ display: "none" }} aria-hidden="true" tabIndex="-1" readOnly />
+        <input type="password" name="fake_password" style={{ display: "none" }} aria-hidden="true" tabIndex="-1" readOnly />
+        <form onSubmit={handleShorten} className="shortener-form" autoComplete="new-password" data-lpignore="true">
           <div className="input-main-group">
             <div className="input-main-wrapper">
               <Link2 className="input-main-icon" />
@@ -327,6 +330,8 @@ const Dashboard = () => {
                 onChange={(e) => setCustomAlias(e.target.value)}
                 disabled={shortening}
                 autoComplete="off"
+                readOnly
+                onFocus={(e) => e.target.removeAttribute('readonly')}
               />
             </div>
 
@@ -351,9 +356,11 @@ const Dashboard = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={shortening}
-                autoComplete="off"
+                autoComplete="new-password"
                 data-lpignore="true"
                 data-form-type="other"
+                readOnly
+                onFocus={(e) => e.target.removeAttribute('readonly')}
               />
             </div>
           </div>
