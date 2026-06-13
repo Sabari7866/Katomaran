@@ -358,216 +358,211 @@ const Dashboard = () => {
         </form>
       </section>
 
-      {/* Main Grid: Left is URL list, Right is Sidebar Stats */}
-      <div className="dashboard-layout-grid">
-        
-        {/* Left Column: URLs list */}
-        <div className="dashboard-main-col">
-          <section className="urls-section glass-panel">
-            <div className="urls-header-row">
-              <h2 className="section-title">Your Shortened Links</h2>
-              <div className="search-bar-wrapper">
-                <Search className="search-icon" size={16} />
-                <input
-                  type="text"
-                  className="search-input"
-                  placeholder="Search links..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
+      {/* Stats Row above the table */}
+      <div className="stats-grid" style={{ marginBottom: "30px" }}>
+        <div className="stat-sidebar-card glass-panel" style={{ padding: "24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div className="stat-sidebar-content" style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+            <span className="stat-label" style={{ fontSize: "14px", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.5px" }}>Total Links</span>
+            <span className="stat-value" style={{ fontSize: "36px", fontWeight: "800", color: "var(--text-main)", lineHeight: "1" }}>{summary.totalUrls}</span>
+          </div>
+          <div className="stat-icon-wrapper purple" style={{ width: "56px", height: "56px", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(99, 102, 241, 0.1)", color: "#6366f1" }}>
+            <Globe size={24} />
+          </div>
+        </div>
+
+        <div className="stat-sidebar-card glass-panel" style={{ padding: "24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div className="stat-sidebar-content" style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+            <span className="stat-label" style={{ fontSize: "14px", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.5px" }}>Total Redirects</span>
+            <span className="stat-value" style={{ fontSize: "36px", fontWeight: "800", color: "var(--text-main)", lineHeight: "1" }}>{summary.totalClicks}</span>
+          </div>
+          <div className="stat-icon-wrapper cyan" style={{ width: "56px", height: "56px", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(6, 182, 212, 0.1)", color: "#06b6d4" }}>
+            <MousePointerClick size={24} />
+          </div>
+        </div>
+
+        <div className="stat-sidebar-card glass-panel" style={{ padding: "24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div className="stat-sidebar-content" style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+            <span className="stat-label" style={{ fontSize: "14px", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.5px" }}>Active Links</span>
+            <span className="stat-value" style={{ fontSize: "36px", fontWeight: "800", color: "var(--text-main)", lineHeight: "1" }}>{summary.activeUrls}</span>
+          </div>
+          <div className="stat-icon-wrapper green" style={{ width: "56px", height: "56px", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(16, 185, 129, 0.1)", color: "#10b981" }}>
+            <Activity size={24} />
+          </div>
+        </div>
+      </div>
+
+      {/* Main Column: URLs list (Full Width Now) */}
+      <div className="dashboard-main-col">
+        <section className="urls-section glass-panel">
+          <div className="urls-header-row">
+            <h2 className="section-title">Your Shortened Links</h2>
+            <div className="search-bar-wrapper">
+              <Search className="search-icon" size={16} />
+              <input
+                type="text"
+                className="search-input"
+                placeholder="Search links..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </div>
-            {error && <div className="auth-error" style={{ marginBottom: "20px" }}>{error}</div>}
+          </div>
+          {error && <div className="auth-error" style={{ marginBottom: "20px" }}>{error}</div>}
 
-            {urls.length === 0 ? (
-              <div style={{ textAlign: "center", padding: "40px 0", color: "var(--text-muted)" }}>
-                No links shortened yet. Shorten your first URL above!
+          {urls.length === 0 ? (
+            <div style={{ textAlign: "center", padding: "40px 0", color: "var(--text-muted)" }}>
+              No links shortened yet. Shorten your first URL above!
+            </div>
+          ) : (
+            <>
+              <div className="urls-table-container">
+                <table className="urls-table">
+                  <thead>
+                    <tr>
+                      <th>Original Destination</th>
+                      <th>Short URL</th>
+                      <th>Created Date</th>
+                      <th>Clicks</th>
+                      <th>Expiry Date</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {urls
+                      .filter((url) => {
+                        const query = searchQuery.toLowerCase();
+                        return (
+                          url.originalUrl.toLowerCase().includes(query) ||
+                          url.shortCode.toLowerCase().includes(query) ||
+                          (url.customAlias && url.customAlias.toLowerCase().includes(query))
+                        );
+                      })
+                      .map((url) => {
+                        const isExpired = url.expiryDate && new Date(url.expiryDate) < new Date();
+                        return (
+                          <React.Fragment key={url._id}>
+                            <tr className="url-row">
+                              <td>
+                                <div className="url-original-cell" title={url.originalUrl}>
+                                  {url.originalUrl}
+                                </div>
+                              </td>
+                              <td>
+                                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                                  {url.password && (
+                                    <Lock 
+                                      size={14} 
+                                      style={{ color: "#a855f7", flexShrink: 0 }} 
+                                      title="Password protected link" 
+                                    />
+                                  )}
+                                  <a
+                                    href={`${BACKEND_URL}/${url.shortCode}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="url-short-link"
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    {BACKEND_URL}/{url.shortCode} <ExternalLink size={12} style={{ display: "inline", marginLeft: "4px" }} />
+                                  </a>
+                                </div>
+                              </td>
+                              <td>
+                                <div className="expiry-badge">
+                                  <Calendar size={12} style={{ display: "inline", marginRight: "4px" }} />
+                                  {new Date(url.createdAt).toLocaleDateString()}
+                                </div>
+                              </td>
+                              <td>
+                                <div className="clicks-badge">{url.clicks}</div>
+                              </td>
+                              <td>
+                                <div className={`expiry-badge ${isExpired ? "expired" : ""}`}>
+                                  {url.expiryDate ? (
+                                    <>
+                                      <Calendar size={12} style={{ display: "inline", marginRight: "4px" }} />
+                                      {new Date(url.expiryDate).toLocaleDateString()} {new Date(url.expiryDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                      {isExpired && " (Expired)"}
+                                    </>
+                                  ) : (
+                                    "No Expiry"
+                                  )}
+                                </div>
+                              </td>
+                              <td>
+                                <div className="actions-cell" onClick={(e) => e.stopPropagation()}>
+                                  <button
+                                    onClick={() => handleCopy(url._id, url.shortCode)}
+                                    className="action-btn"
+                                    title="Copy URL"
+                                  >
+                                    {copiedId === url._id ? <Check size={16} color="#10b981" /> : <Copy size={16} />}
+                                  </button>
+                                  <button
+                                    onClick={() => openQrModal(url.shortCode)}
+                                    className="action-btn"
+                                    title="Generate QR"
+                                  >
+                                    <QrCode size={16} />
+                                  </button>
+                                  <button
+                                    onClick={() => openEditModal(url)}
+                                    className="action-btn"
+                                    title="Edit Destination URL"
+                                  >
+                                    <Pencil size={16} />
+                                  </button>
+                                  <Link
+                                    to={`/analytics/${url._id}`}
+                                    className="action-btn"
+                                    title="View Analytics"
+                                  >
+                                    <BarChart3 size={16} />
+                                  </Link>
+                                  <button
+                                    onClick={() => handleDelete(url._id)}
+                                    className="action-btn delete"
+                                    title="Delete Link"
+                                  >
+                                    <Trash2 size={16} />
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          </React.Fragment>
+                        );
+                      })}
+                  </tbody>
+                </table>
               </div>
-            ) : (
-              <>
-                <div className="urls-table-container">
-                  <table className="urls-table">
-                    <thead>
-                      <tr>
-                        <th>Original Destination</th>
-                        <th>Short URL</th>
-                        <th>Created Date</th>
-                        <th>Clicks</th>
-                        <th>Expiry Date</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {urls
-                        .filter((url) => {
-                          const query = searchQuery.toLowerCase();
-                          return (
-                            url.originalUrl.toLowerCase().includes(query) ||
-                            url.shortCode.toLowerCase().includes(query) ||
-                            (url.customAlias && url.customAlias.toLowerCase().includes(query))
-                          );
-                        })
-                        .map((url) => {
-                          const isExpired = url.expiryDate && new Date(url.expiryDate) < new Date();
-                          return (
-                            <React.Fragment key={url._id}>
-                              <tr className="url-row">
-                                <td>
-                                  <div className="url-original-cell" title={url.originalUrl}>
-                                    {url.originalUrl}
-                                  </div>
-                                </td>
-                                <td>
-                                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                                    {url.password && (
-                                      <Lock 
-                                        size={14} 
-                                        style={{ color: "#a855f7", flexShrink: 0 }} 
-                                        title="Password protected link" 
-                                      />
-                                    )}
-                                    <a
-                                      href={`${BACKEND_URL}/${url.shortCode}`}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="url-short-link"
-                                      onClick={(e) => e.stopPropagation()}
-                                    >
-                                      {BACKEND_URL}/{url.shortCode} <ExternalLink size={12} style={{ display: "inline", marginLeft: "4px" }} />
-                                    </a>
-                                  </div>
-                                </td>
-                                <td>
-                                  <div className="expiry-badge">
-                                    <Calendar size={12} style={{ display: "inline", marginRight: "4px" }} />
-                                    {new Date(url.createdAt).toLocaleDateString()}
-                                  </div>
-                                </td>
-                                <td>
-                                  <div className="clicks-badge">{url.clicks}</div>
-                                </td>
-                                <td>
-                                  <div className={`expiry-badge ${isExpired ? "expired" : ""}`}>
-                                    {url.expiryDate ? (
-                                      <>
-                                        <Calendar size={12} style={{ display: "inline", marginRight: "4px" }} />
-                                        {new Date(url.expiryDate).toLocaleDateString()} {new Date(url.expiryDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                        {isExpired && " (Expired)"}
-                                      </>
-                                    ) : (
-                                      "No Expiry"
-                                    )}
-                                  </div>
-                                </td>
-                                <td>
-                                  <div className="actions-cell" onClick={(e) => e.stopPropagation()}>
-                                    <button
-                                      onClick={() => handleCopy(url._id, url.shortCode)}
-                                      className="action-btn"
-                                      title="Copy URL"
-                                    >
-                                      {copiedId === url._id ? <Check size={16} color="#10b981" /> : <Copy size={16} />}
-                                    </button>
-                                    <button
-                                      onClick={() => openQrModal(url.shortCode)}
-                                      className="action-btn"
-                                      title="Generate QR"
-                                    >
-                                      <QrCode size={16} />
-                                    </button>
-                                    <button
-                                      onClick={() => openEditModal(url)}
-                                      className="action-btn"
-                                      title="Edit Destination URL"
-                                    >
-                                      <Pencil size={16} />
-                                    </button>
-                                    <Link
-                                      to={`/analytics/${url._id}`}
-                                      className="action-btn"
-                                      title="View Analytics"
-                                    >
-                                      <BarChart3 size={16} />
-                                    </Link>
-                                    <button
-                                      onClick={() => handleDelete(url._id)}
-                                      className="action-btn delete"
-                                      title="Delete Link"
-                                    >
-                                      <Trash2 size={16} />
-                                    </button>
-                                  </div>
-                                </td>
-                              </tr>
-                            </React.Fragment>
-                          );
-                        })}
-                    </tbody>
-                  </table>
-                </div>
 
-                {/* Pagination */}
-                {totalPages > 1 && (
-                  <div className="pagination-container">
-                    <span className="pagination-info">
-                      Page {currentPage} of {totalPages}
-                    </span>
-                    <div className="pagination-controls">
-                      <button
-                        onClick={() => fetchDashboardData(currentPage - 1)}
-                        disabled={currentPage === 1}
-                        className="pagination-btn"
-                      >
-                        Previous
-                      </button>
-                      <button
-                        onClick={() => fetchDashboardData(currentPage + 1)}
-                        disabled={currentPage === totalPages}
-                        className="pagination-btn"
-                      >
-                        Next
-                      </button>
-                    </div>
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="pagination-container">
+                  <span className="pagination-info">
+                    Page {currentPage} of {totalPages}
+                  </span>
+                  <div className="pagination-controls">
+                    <button
+                      onClick={() => fetchDashboardData(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      className="pagination-btn"
+                    >
+                      Previous
+                    </button>
+                    <button
+                      onClick={() => fetchDashboardData(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      className="pagination-btn"
+                    >
+                      Next
+                    </button>
                   </div>
-                )}
-              </>
-            )}
-          </section>
-        </div>
-
-        {/* Right Column: Sidebar Stats */}
-        <div className="dashboard-sidebar-col">
-          <div className="stat-sidebar-card glass-panel">
-            <div className="stat-sidebar-content">
-              <span className="stat-label">Total Links</span>
-              <span className="stat-value">{summary.totalUrls}</span>
-            </div>
-            <div className="stat-icon-wrapper purple">
-              <Globe size={24} />
-            </div>
-          </div>
-
-          <div className="stat-sidebar-card glass-panel">
-            <div className="stat-sidebar-content">
-              <span className="stat-label">Total Redirects</span>
-              <span className="stat-value">{summary.totalClicks}</span>
-            </div>
-            <div className="stat-icon-wrapper cyan">
-              <MousePointerClick size={24} />
-            </div>
-          </div>
-
-          <div className="stat-sidebar-card glass-panel">
-            <div className="stat-sidebar-content">
-              <span className="stat-label">Active Links</span>
-              <span className="stat-value">{summary.activeUrls}</span>
-            </div>
-            <div className="stat-icon-wrapper green">
-              <Activity size={24} />
-            </div>
-          </div>
-        </div>
-
+                </div>
+              )}
+            </>
+          )}
+        </section>
       </div>
 
       {/* QR Code Modal */}

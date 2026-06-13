@@ -92,6 +92,18 @@ function getPasswordPage(shortCode, errorMsg = "") {
       text-align: center;
     }
     
+    .logo-container {
+      margin-bottom: 24px;
+    }
+    
+    .logo-container img {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      object-fit: cover;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+    
     .lock-icon-container {
       width: 72px;
       height: 72px;
@@ -241,6 +253,9 @@ function getPasswordPage(shortCode, errorMsg = "") {
 <body>
   <div class="container">
     <div class="card">
+      <div class="logo-container">
+        <img src="${frontendUrl}/logo.png" alt="SnapLink Logo" />
+      </div>
       <div class="lock-icon-container">
         <svg viewBox="0 0 24 24">
           <defs>
