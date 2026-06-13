@@ -19,10 +19,10 @@
 You can view the full interactive walk-through and features demo via the recorded browser sessions:
 
 * **Full Feature Demo Recording (Latest V2):**  
-  ![SnapLink Demo Recording V2](docs/screenshots/snaplink_demo_v2_1781341044333.webp)
+  ![SnapLink Demo Recording V2](./docs/screenshots/snaplink_demo_v2_1781341044333.webp)
 
 * **Hosted App Walkthrough Recording (V1):**  
-  ![Validation Session Recording](docs/screenshots/hosted_app_demo_1781332914398.webp)
+  ![Validation Session Recording](./docs/screenshots/hosted_app_demo_1781332914398.webp)
 
 ---
 
@@ -31,22 +31,22 @@ You can view the full interactive walk-through and features demo via the recorde
 Below is the step-by-step visual verification flow captured during the verification phases:
 
 #### 1. Always Open Options Form
-![Always Open Options Form](docs/screenshots/dashboard_options_visible_1781326220961.png)
+![Always Open Options Form](./docs/screenshots/dashboard_options_visible_1781326220961.png)
 
 #### 2. Shortened Link with Lock Icon
-![Shortened Link with Lock Icon](docs/screenshots/secglow3_created_1781326310545.png)
+![Shortened Link with Lock Icon](./docs/screenshots/secglow3_created_1781326310545.png)
 
 #### 3. Analytics Dropdown Link Switcher
-![Analytics Dropdown Link Switcher](docs/screenshots/analytics_page_redesign_1781322709651.png)
+![Analytics Dropdown Link Switcher](./docs/screenshots/analytics_page_redesign_1781322709651.png)
 
 #### 4. Premium Lock Screen
-![Premium Lock Screen](docs/screenshots/secglow3_password_page_1781326749944.png)
+![Premium Lock Screen](./docs/screenshots/secglow3_password_page_1781326749944.png)
 
 #### 5. Incorrect Password Error Glow
-![Incorrect Password Error Glow](docs/screenshots/wrong_password_error_1781326823763.png)
+![Incorrect Password Error Glow](./docs/screenshots/wrong_password_error_1781326823763.png)
 
 #### 6. Success Redirect to Destination
-![Success Redirect to Destination](docs/screenshots/google_redirected_success_1781328223213.png)
+![Success Redirect to Destination](./docs/screenshots/google_redirected_success_1781328223213.png)
 
 ---
 
