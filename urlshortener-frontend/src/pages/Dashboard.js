@@ -9,8 +9,6 @@ import {
   LogOut,
   Calendar,
   Sparkles,
-  ChevronDown,
-  ChevronUp,
   Loader2,
   ExternalLink,
   Check,
@@ -22,6 +20,7 @@ import {
   Pencil,
   Search,
   Settings,
+  Lock,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import {
@@ -30,7 +29,6 @@ import {
   deleteUrl,
   updateUrl,
   getDashboardSummary,
-  getUrlAnalytics,
   logout,
 } from "../api/api";
 import "./Dashboard.css";
@@ -41,7 +39,7 @@ const Dashboard = () => {
   const [originalUrl, setOriginalUrl] = useState("");
   const [customAlias, setCustomAlias] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
-  const [showOptions, setShowOptions] = useState(false);
+  const [password, setPassword] = useState("");
   
   // Data states
   const [urls, setUrls] = useState([]);
@@ -78,35 +76,6 @@ const Dashboard = () => {
 
   // Rebranding & interactive states
   const [searchQuery, setSearchQuery] = useState("");
-  const [expandedUrlId, setExpandedUrlId] = useState(null);
-  const [inlineAnalytics, setInlineAnalytics] = useState({});
-  const [inlineLoading, setInlineLoading] = useState(false);
-
-
-
-  const handleToggleExpand = async (urlId) => {
-    if (expandedUrlId === urlId) {
-      setExpandedUrlId(null);
-      return;
-    }
-
-    setExpandedUrlId(urlId);
-
-    if (!inlineAnalytics[urlId]) {
-      setInlineLoading(true);
-      try {
-        const result = await getUrlAnalytics(urlId);
-        setInlineAnalytics(prev => ({
-          ...prev,
-          [urlId]: result.analytics
-        }));
-      } catch (err) {
-        console.error("Failed to load inline analytics", err);
-      } finally {
-        setInlineLoading(false);
-      }
-    }
-  };
 
   const fetchDashboardData = async (page = 1) => {
     try {
@@ -138,13 +107,14 @@ const Dashboard = () => {
         originalUrl,
         customAlias: customAlias || undefined,
         expiryDate: expiryDate ? new Date(expiryDate).toISOString() : undefined,
+        password: password || undefined,
       });
 
       // Clear input form
       setOriginalUrl("");
       setCustomAlias("");
       setExpiryDate("");
-      setShowOptions(false);
+      setPassword("");
 
       // Refresh list
       await fetchDashboardData(1);
@@ -345,43 +315,43 @@ const Dashboard = () => {
             </button>
           </div>
 
-          {/* Options Collapsible */}
-          <button
-            type="button"
-            className="options-trigger"
-            onClick={() => setShowOptions(!showOptions)}
-          >
-            {showOptions ? <ChevronUp size={16} /> : <ChevronDown size={16} />} 
-            Advanced Options (Custom Alias, Expiry)
-          </button>
-
-          {showOptions && (
-            <div className="collapsible-options">
-              <div className="option-group">
-                <label className="option-label">Custom Alias (Optional)</label>
-                <input
-                  type="text"
-                  className="option-input"
-                  placeholder="e.g. portfolio-2026"
-                  value={customAlias}
-                  onChange={(e) => setCustomAlias(e.target.value)}
-                  disabled={shortening}
-                />
-              </div>
-
-              <div className="option-group">
-                <label className="option-label">Link Expiry Date (Optional)</label>
-                <input
-                  type="datetime-local"
-                  className="option-input"
-                  value={expiryDate}
-                  min={new Date().toISOString().substring(0, 16)}
-                  onChange={(e) => setExpiryDate(e.target.value)}
-                  disabled={shortening}
-                />
-              </div>
+          <div className="collapsible-options" style={{ marginTop: "16px" }}>
+            <div className="option-group">
+              <label className="option-label">Custom Alias (Optional)</label>
+              <input
+                type="text"
+                className="option-input"
+                placeholder="e.g. portfolio-2026"
+                value={customAlias}
+                onChange={(e) => setCustomAlias(e.target.value)}
+                disabled={shortening}
+              />
             </div>
-          )}
+
+            <div className="option-group">
+              <label className="option-label">Link Expiry Date (Optional)</label>
+              <input
+                type="datetime-local"
+                className="option-input"
+                value={expiryDate}
+                min={new Date().toISOString().substring(0, 16)}
+                onChange={(e) => setExpiryDate(e.target.value)}
+                disabled={shortening}
+              />
+            </div>
+
+            <div className="option-group">
+              <label className="option-label">Link Password (Optional)</label>
+              <input
+                type="password"
+                className="option-input"
+                placeholder="e.g. secure-pass"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={shortening}
+              />
+            </div>
+          </div>
         </form>
       </section>
 
@@ -436,29 +406,33 @@ const Dashboard = () => {
                         })
                         .map((url) => {
                           const isExpired = url.expiryDate && new Date(url.expiryDate) < new Date();
-                          const isExpanded = expandedUrlId === url._id;
                           return (
                             <React.Fragment key={url._id}>
-                              <tr 
-                                className={`url-row ${isExpanded ? "active-row" : ""}`}
-                                onClick={() => handleToggleExpand(url._id)}
-                                style={{ cursor: "pointer" }}
-                              >
+                              <tr className="url-row">
                                 <td>
                                   <div className="url-original-cell" title={url.originalUrl}>
                                     {url.originalUrl}
                                   </div>
                                 </td>
                                 <td>
-                                  <a
-                                    href={`${BACKEND_URL}/${url.shortCode}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="url-short-link"
-                                    onClick={(e) => e.stopPropagation()}
-                                  >
-                                    {BACKEND_URL}/{url.shortCode} <ExternalLink size={12} style={{ display: "inline", marginLeft: "4px" }} />
-                                  </a>
+                                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                                    {url.password && (
+                                      <Lock 
+                                        size={14} 
+                                        style={{ color: "#a855f7", flexShrink: 0 }} 
+                                        title="Password protected link" 
+                                      />
+                                    )}
+                                    <a
+                                      href={`${BACKEND_URL}/${url.shortCode}`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="url-short-link"
+                                      onClick={(e) => e.stopPropagation()}
+                                    >
+                                      {BACKEND_URL}/{url.shortCode} <ExternalLink size={12} style={{ display: "inline", marginLeft: "4px" }} />
+                                    </a>
+                                  </div>
                                 </td>
                                 <td>
                                   <div className="expiry-badge">
@@ -522,89 +496,6 @@ const Dashboard = () => {
                                   </div>
                                 </td>
                               </tr>
-                              {isExpanded && (
-                                <tr className="expanded-row-tr" onClick={(e) => e.stopPropagation()}>
-                                  <td colSpan={6}>
-                                    <div className="inline-drawer glass-panel">
-                                      {inlineLoading && !inlineAnalytics[url._id] ? (
-                                        <div className="inline-loader">
-                                          <Loader2 className="animate-spin" size={20} color="#6366f1" />
-                                          <span>Loading link metrics...</span>
-                                        </div>
-                                      ) : inlineAnalytics[url._id] ? (
-                                        <div className="inline-drawer-content animate-fade-in">
-                                          <div className="inline-meta-grid">
-                                            <div className="inline-meta-item">
-                                              <span className="inline-meta-label">Last Visited</span>
-                                              <span className="inline-meta-value">
-                                                {url.lastVisited ? new Date(url.lastVisited).toLocaleString() : "Never"}
-                                              </span>
-                                            </div>
-                                            <div className="inline-meta-item">
-                                              <span className="inline-meta-label">Created At</span>
-                                              <span className="inline-meta-value">
-                                                {new Date(url.createdAt).toLocaleString()}
-                                              </span>
-                                            </div>
-                                          </div>
-                                          
-                                          <div className="inline-breakdown-grid">
-                                            <div className="inline-breakdown-card">
-                                              <span className="inline-card-title">Device Share</span>
-                                              {inlineAnalytics[url._id].deviceBreakdown.length === 0 ? (
-                                                <span className="no-data-text">No traffic registered yet</span>
-                                              ) : (
-                                                <div className="mini-bar-list">
-                                                  {inlineAnalytics[url._id].deviceBreakdown.map((item, idx) => (
-                                                    <div className="mini-bar-item" key={item.name}>
-                                                      <div className="mini-bar-info">
-                                                        <span>{item.name}</span>
-                                                        <span>{item.value} click{item.value > 1 ? "s" : ""} ({Math.round((item.value / (url.clicks || 1)) * 100)}%)</span>
-                                                      </div>
-                                                      <div className="mini-bar-bg">
-                                                        <div 
-                                                          className={`mini-bar-fill ${idx === 0 ? "purple" : idx === 1 ? "cyan" : "pink"}`}
-                                                          style={{ width: `${Math.round((item.value / (url.clicks || 1)) * 100)}%` }}
-                                                        />
-                                                      </div>
-                                                    </div>
-                                                  ))}
-                                                </div>
-                                              )}
-                                            </div>
-                                            
-                                            <div className="inline-breakdown-card">
-                                              <span className="inline-card-title">Top Browsers</span>
-                                              {inlineAnalytics[url._id].browserBreakdown.length === 0 ? (
-                                                <span className="no-data-text">No traffic registered yet</span>
-                                              ) : (
-                                                <div className="mini-bar-list">
-                                                  {inlineAnalytics[url._id].browserBreakdown.slice(0, 2).map((item, idx) => (
-                                                    <div className="mini-bar-item" key={item.name}>
-                                                      <div className="mini-bar-info">
-                                                        <span>{item.name}</span>
-                                                        <span>{item.value} click{item.value > 1 ? "s" : ""} ({Math.round((item.value / (url.clicks || 1)) * 100)}%)</span>
-                                                      </div>
-                                                      <div className="mini-bar-bg">
-                                                        <div 
-                                                          className={`mini-bar-fill ${idx === 0 ? "purple" : "cyan"}`}
-                                                          style={{ width: `${Math.round((item.value / (url.clicks || 1)) * 100)}%` }}
-                                                        />
-                                                      </div>
-                                                    </div>
-                                                  ))}
-                                                </div>
-                                              )}
-                                            </div>
-                                          </div>
-                                        </div>
-                                      ) : (
-                                        <div className="inline-error">Failed to load metrics.</div>
-                                      )}
-                                    </div>
-                                  </td>
-                                </tr>
-                              )}
                             </React.Fragment>
                           );
                         })}

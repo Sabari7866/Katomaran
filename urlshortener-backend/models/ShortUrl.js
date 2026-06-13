@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 
 const shortUrlSchema = new mongoose.Schema(
   {
@@ -36,8 +37,29 @@ const shortUrlSchema = new mongoose.Schema(
     lastVisited: {
       type: Date,
     },
+    password: {
+      type: String,
+      default: null,
+    },
   },
   { timestamps: true }
 );
+
+// Hash link password before saving
+shortUrlSchema.pre("save", async function () {
+  if (!this.isModified("password")) return;
+  if (!this.password) {
+    this.password = null;
+    return;
+  }
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+});
+
+// Compare link password
+shortUrlSchema.methods.comparePassword = async function (enteredPassword) {
+  if (!this.password) return true;
+  return await bcrypt.compare(enteredPassword, this.password);
+};
 
 module.exports = mongoose.model("ShortUrl", shortUrlSchema);

@@ -14,7 +14,7 @@ import {
   BarChart3,
 } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import { getUrlAnalytics, logout } from "../api/api";
+import { getUrlAnalytics, getUrls, logout } from "../api/api";
 import "./Analytics.css";
 import "./Dashboard.css";
 
@@ -30,14 +30,20 @@ const Analytics = () => {
     navigate("/login");
   };
   const [data, setData] = useState(null);
+  const [urls, setUrls] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchAnalytics = async () => {
       try {
-        const result = await getUrlAnalytics(urlId);
+        setLoading(true);
+        const [result, urlsResult] = await Promise.all([
+          getUrlAnalytics(urlId),
+          getUrls(1, 100)
+        ]);
         setData(result);
+        setUrls(urlsResult.urls || []);
       } catch (err) {
         setError("Failed to load analytics details.");
       } finally {
@@ -46,6 +52,13 @@ const Analytics = () => {
     };
     fetchAnalytics();
   }, [urlId]);
+
+  const handleSelectLink = (e) => {
+    const selectedId = e.target.value;
+    if (selectedId) {
+      navigate(`/analytics/${selectedId}`);
+    }
+  };
 
   if (loading) {
     return (
@@ -148,6 +161,24 @@ const Analytics = () => {
         <Link to="/" className="back-btn">
           <ArrowLeft size={16} /> Back to Dashboard
         </Link>
+
+        {urls.length > 0 && (
+          <div className="analytics-selector-wrapper" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <span style={{ fontSize: "13px", color: "var(--text-muted)", fontWeight: "600", textTransform: "uppercase", letterSpacing: "0.5px" }}>Switch Link:</span>
+            <select
+              value={urlId}
+              onChange={handleSelectLink}
+              className="analytics-link-selector"
+            >
+              {urls.map((u) => (
+                <option key={u._id} value={u._id}>
+                  {u.customAlias || u.shortCode} ({u.originalUrl.replace(/https?:\/\/(www\.)?/, '').substring(0, 25)}...)
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
         <div className="analytics-title-group">
           <h1 className="analytics-title">Link Analytics</h1>
           <span className="analytics-subtitle">

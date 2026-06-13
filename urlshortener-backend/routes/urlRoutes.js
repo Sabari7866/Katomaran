@@ -9,7 +9,7 @@ const authMiddleware = require("../middleware/authMiddleware");
 // Create Short URL
 router.post("/", authMiddleware, async (req, res) => {
   try {
-    const { originalUrl, customAlias, expiryDate } = req.body;
+    const { originalUrl, customAlias, expiryDate, password } = req.body;
 
     // Validate URL format
     if (!originalUrl || !validator.isURL(originalUrl, { require_protocol: true })) {
@@ -72,6 +72,7 @@ router.post("/", authMiddleware, async (req, res) => {
       customAlias: customAlias ? customAlias.trim() : undefined,
       user: req.user.id,
       expiryDate: parsedExpiry,
+      password: password || undefined,
     });
 
     res.status(201).json(url);

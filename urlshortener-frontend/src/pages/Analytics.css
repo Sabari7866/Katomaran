@@ -281,3 +281,28 @@
     text-align: left;
   }
 }
+
+.analytics-link-selector {
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  color: var(--text-main);
+  outline: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  max-width: 320px;
+  text-overflow: ellipsis;
+  transition: var(--transition-smooth);
+}
+
+.analytics-link-selector:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--border-hover);
+}
+
+.analytics-link-selector option {
+  background-color: #060913;
+  color: var(--text-main);
+}
