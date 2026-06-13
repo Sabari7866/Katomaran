@@ -463,83 +463,23 @@ Body: password=user_entered_password
 ## 📸 Sample Output
 
 ### Dashboard
-![Dashboard](https://urlshortener001.vercel.app)
-
-The dashboard shows:
-- Shortener form with Custom Alias, Expiry Date, and Link Password options
-- Stats row: Total Links, Total Redirects, Active Links
-- Full-width links table with columns: Original Destination, Short URL (with 🔒 for protected), Created Date, Clicks, Expiry Date, Actions
+![Dashboard](./docs/screenshots/dashboard_options_visible_1781326220961.png)
 
 ### Analytics Page
-Per-link analytics with:
-- Line chart: clicks over last 30 days
-- Pie chart: device breakdown (Desktop / Mobile / Tablet)
-- Bar chart: browser breakdown (Chrome / Firefox / Safari / Edge)
-- Table: top referrers
+![Analytics Page](./docs/screenshots/analytics_page_redesign_1781322709651.png)
 
 ### Password Lock Screen
-When visiting a password-protected short link, users see a branded lock screen with:
-- SnapLink logo
-- Animated lock icon (gradient cyan → purple)
-- Password input field
-- "Unlock & Redirect" button
+![Premium Lock Screen](./docs/screenshots/secglow3_password_page_1781326749944.png)
 
-### Database Entries (MongoDB)
+### Database Entries (MongoDB Atlas)
 
-> 📁 **Database JSON Exports:** Raw database collection dump files are available in [docs/db-exports/](./docs/db-exports/) (`users.json`, `shorturls.json`, and `visits.json`).
+As requested, here are the live database entries verifying our document schemas:
 
-#### 📸 MongoDB Atlas Data Explorer Verification
-
-Here are the live MongoDB Atlas database entries verifying the document schemas and click/redirect details:
-
-##### Users Collection
+**Users Collection:**
 ![MongoDB Atlas Users Collection](./docs/screenshots/mongodb_users_collection.png)
 
-##### Short URLs Collection
+**Short URLs Collection:**
 ![MongoDB Atlas Short URLs Collection](./docs/screenshots/mongodb_shorturls_collection.png)
-
----
-
-**users collection:**
-```json
-{
-  "_id": "ObjectId(...)",
-  "username": "johndoe",
-  "email": "john@example.com",
-  "password": "$2a$12$...(bcrypt hash)...",
-  "createdAt": "2026-06-13T00:00:00.000Z"
-}
-```
-
-**shorturls collection:**
-```json
-{
-  "_id": "ObjectId(...)",
-  "user": "ObjectId(...)",
-  "originalUrl": "https://www.github.com/some/very/long/url",
-  "shortCode": "git-pass",
-  "customAlias": "git-pass",
-  "clicks": 2,
-  "isActive": true,
-  "expiryDate": null,
-  "password": "$2a$12$...(bcrypt hash)...",
-  "lastVisited": "2026-06-13T08:55:00.000Z",
-  "createdAt": "2026-06-13T07:30:00.000Z"
-}
-```
-
-**visits collection:**
-```json
-{
-  "_id": "ObjectId(...)",
-  "shortUrl": "ObjectId(...)",
-  "ipAddress": "103.x.x.x",
-  "userAgent": "Mozilla/5.0 (Windows NT 10.0...) Chrome/125.0.0.0",
-  "device": "Desktop",
-  "browser": "Chrome",
-  "referer": "Direct",
-  "createdAt": "2026-06-13T08:55:00.000Z"
-```
 
 ### Server Console Logs
 
