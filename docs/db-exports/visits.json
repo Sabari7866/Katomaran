@@ -1,0 +1,13 @@
+[
+  {
+    "_id": { "$oid": "666acc0df8c5b9001b3d8812" },
+    "shortUrl": { "$oid": "666acb12f8c5b9001b3d87e1" },
+    "ipAddress": "127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
+    "device": "Desktop",
+    "browser": "Chrome",
+    "referer": "Direct",
+    "createdAt": { "$date": "2026-06-13T09:10:45.000Z" },
+    "__v": 0
+  }
+]

@@ -518,6 +518,8 @@ When visiting a password-protected short link, users see a branded lock screen w
 
 ### Database Entries (MongoDB)
 
+> 📁 **Database JSON Exports:** Raw database collection dump files are available in [docs/db-exports/](./docs/db-exports/) (`users.json`, `shorturls.json`, and `visits.json`).
+
 **users collection:**
 ```json
 {

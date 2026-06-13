@@ -1,0 +1,10 @@
+[
+  {
+    "_id": { "$oid": "666ac8a2f8c5b9001b3d87a2" },
+    "username": "demouser",
+    "email": "demouser@gmail.com",
+    "password": "$2a$10$UoWbQ.TjK0m59FhWn1gC9exF6x/Z9Ld7U8uLgX2FjK5WpT7X1C2yG",
+    "createdAt": { "$date": "2026-06-13T07:30:00.000Z" },
+    "__v": 0
+  }
+]

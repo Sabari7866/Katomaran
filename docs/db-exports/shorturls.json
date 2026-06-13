@@ -1,0 +1,43 @@
+[
+  {
+    "_id": { "$oid": "666ac9f8f8c5b9001b3d87b5" },
+    "user": { "$oid": "666ac8a2f8c5b9001b3d87a2" },
+    "originalUrl": "https://github.com/Sabari7866/Katomaran",
+    "shortCode": "repo",
+    "customAlias": "repo",
+    "clicks": 14,
+    "isActive": true,
+    "expiryDate": null,
+    "password": "",
+    "lastVisited": { "$date": "2026-06-13T09:12:15.000Z" },
+    "createdAt": { "$date": "2026-06-13T07:45:00.000Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "666aca7ef8c5b9001b3d87c9" },
+    "user": { "$oid": "666ac8a2f8c5b9001b3d87a2" },
+    "originalUrl": "https://www.youtube.com",
+    "shortCode": "uFAbAEP",
+    "customAlias": "",
+    "clicks": 0,
+    "isActive": true,
+    "expiryDate": null,
+    "password": "",
+    "createdAt": { "$date": "2026-06-13T07:50:00.000Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "666acb12f8c5b9001b3d87e1" },
+    "user": { "$oid": "666ac8a2f8c5b9001b3d87a2" },
+    "originalUrl": "https://google.com",
+    "shortCode": "secglow3",
+    "customAlias": "secglow3",
+    "clicks": 1,
+    "isActive": true,
+    "expiryDate": null,
+    "password": "$2a$12$ZpB9U.e3K1v6/F7Wn3hD9oxH7y/B9Md6U8uLgX2FjK5WpT7X1C2yG",
+    "lastVisited": { "$date": "2026-06-13T09:10:45.000Z" },
+    "createdAt": { "$date": "2026-06-13T08:00:00.000Z" },
+    "__v": 0
+  }
+]
