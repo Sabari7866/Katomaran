@@ -21,6 +21,7 @@ import {
   Download,
   Pencil,
   Search,
+  Settings,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import {
@@ -275,17 +276,38 @@ const Dashboard = () => {
           <div className="brand-logo">SNAPLINK</div>
         </div>
 
-        {/* Sleek User Profile in Top Right Header */}
-        <div className="user-profile-header">
-          <div className="avatar-circle">
-            {user.username ? user.username.charAt(0).toUpperCase() : "U"}
-          </div>
-          <div className="profile-details">
-            <span className="welcome-label">Welcome</span>
-            <span className="profile-name">{user.username}</span>
-          </div>
-          <button onClick={handleLogout} className="logout-icon-btn" title="Log Out">
-            <LogOut size={16} />
+        {/* Navigation pill in the middle */}
+        <nav className="header-navigation">
+          <Link to="/" className="nav-item active">
+            <Globe size={16} />
+            <span>Dashboard</span>
+          </Link>
+          {urls.length > 0 ? (
+            <Link to={`/analytics/${urls[0]._id}`} className="nav-item">
+              <BarChart3 size={16} />
+              <span>Analytics</span>
+            </Link>
+          ) : (
+            <button className="nav-item disabled-nav" title="Shorten a link first to view analytics" style={{ cursor: "not-allowed" }}>
+              <BarChart3 size={16} />
+              <span>Analytics</span>
+            </button>
+          )}
+          <Link to="/settings" className="nav-item">
+            <Settings size={16} />
+            <span>Settings</span>
+          </Link>
+        </nav>
+
+        {/* Elegant User Profile in Top Right Header */}
+        <div className="user-profile-container">
+          <span className="welcome-text-new">
+            <span className="user-status-dot"></span>
+            Welcome, <strong className="profile-name-new">{user.username}</strong>
+          </span>
+          <button onClick={handleLogout} className="logout-btn-capsule" title="Log Out">
+            <LogOut size={14} />
+            <span>Log Out</span>
           </button>
         </div>
       </header>

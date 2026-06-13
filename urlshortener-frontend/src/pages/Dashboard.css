@@ -852,68 +852,115 @@
   background: var(--accent-gradient);
 }
 
-/* Sleek User Profile in Top Right Header */
-.user-profile-header {
+/* Middle Navigation Pill */
+.header-navigation {
   display: flex;
   align-items: center;
-  gap: 12px;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(10, 15, 30, 0.6);
   border: 1px solid var(--border-color);
-  padding: 6px 14px 6px 6px;
-  border-radius: 20px;
-}
-
-.avatar-circle {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: var(--primary-gradient);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-display);
-  font-size: 14px;
-  font-weight: 700;
-  color: white;
-  box-shadow: 0 0 10px rgba(99, 102, 241, 0.4);
-}
-
-.profile-details {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.2;
-}
-
-.welcome-label {
-  font-size: 10px;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.profile-name {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text-main);
-}
-
-.logout-icon-btn {
-  background: none;
-  border: none;
-  color: var(--text-muted);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   padding: 4px;
-  border-radius: 50%;
-  margin-left: 4px;
+  border-radius: 30px;
+  gap: 4px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 20px;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  text-decoration: none;
+  background: none;
   transition: var(--transition-smooth);
 }
 
-.logout-icon-btn:hover {
+.nav-item.active {
+  background: #111726;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.nav-item:hover:not(.active):not(.disabled-nav) {
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.nav-item.disabled-nav {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+/* Elegant User Profile right-side header */
+.user-profile-container {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-color);
+  padding: 5px 12px 5px 16px;
+  border-radius: 24px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  transition: var(--transition-smooth);
+}
+
+.user-profile-container:hover {
+  border-color: rgba(0, 242, 254, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 242, 254, 0.12);
+  transform: translateY(-1px);
+}
+
+.welcome-text-new {
+  font-size: 13px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-weight: 500;
+}
+
+.user-status-dot {
+  width: 6px;
+  height: 6px;
+  background-color: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #10b981;
+  display: inline-block;
+  animation: pulse-slow 2s infinite ease-in-out;
+}
+
+.profile-name-new {
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.logout-btn-capsule {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  background: rgba(244, 63, 94, 0.06);
+  border: 1px solid rgba(244, 63, 94, 0.25);
   color: #f43f5e;
-  background: rgba(244, 63, 94, 0.1);
+  border-radius: 20px;
+  font-size: 13px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  transition: var(--transition-smooth);
+}
+
+.logout-btn-capsule:hover {
+  background: #f43f5e;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(244, 63, 94, 0.3);
 }
 
 .brand-logo-img {
@@ -921,7 +968,7 @@
   height: 32px;
   border-radius: 8px;
   object-fit: cover;
-  border: 1px solid rgba(99, 102, 241, 0.3);
+  border: 1px solid rgba(0, 242, 254, 0.35);
 }
 
 /* Two-column Dashboard Grid Layout */
@@ -968,7 +1015,7 @@
     gap: 16px;
     align-items: flex-start;
   }
-  .user-profile-header {
+  .user-profile-container {
     width: 100%;
     justify-content: space-between;
   }

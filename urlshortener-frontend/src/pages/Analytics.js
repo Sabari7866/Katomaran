@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import {
   ArrowLeft,
   Clock,
@@ -8,15 +8,27 @@ import {
   Loader2,
   Smartphone,
   Tablet,
+  Globe,
+  Settings,
+  LogOut,
+  BarChart3,
 } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import { getUrlAnalytics } from "../api/api";
+import { getUrlAnalytics, logout } from "../api/api";
 import "./Analytics.css";
+import "./Dashboard.css";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
 
 const Analytics = () => {
   const { urlId } = useParams();
+  const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -95,8 +107,44 @@ const Analytics = () => {
 
   return (
     <div className="analytics-container">
-      {/* Header */}
-      <header className="analytics-header">
+      {/* Global Header */}
+      <header className="dashboard-header" style={{ marginBottom: "30px" }}>
+        <div className="brand-wrapper">
+          <img src="/logo.png" className="brand-logo-img" alt="SnapLink Logo" style={{ width: "32px", height: "32px", borderRadius: "8px", objectFit: "cover" }} />
+          <div className="brand-logo">SNAPLINK</div>
+        </div>
+
+        {/* Navigation pill in the middle */}
+        <nav className="header-navigation">
+          <Link to="/" className="nav-item">
+            <Globe size={16} />
+            <span>Dashboard</span>
+          </Link>
+          <button className="nav-item active">
+            <BarChart3 size={16} />
+            <span>Analytics</span>
+          </button>
+          <Link to="/settings" className="nav-item">
+            <Settings size={16} />
+            <span>Settings</span>
+          </Link>
+        </nav>
+
+        {/* Elegant User Profile in Top Right Header */}
+        <div className="user-profile-container">
+          <span className="welcome-text-new">
+            <span className="user-status-dot"></span>
+            Welcome, <strong className="profile-name-new">{user.username}</strong>
+          </span>
+          <button onClick={handleLogout} className="logout-btn-capsule" title="Log Out">
+            <LogOut size={14} />
+            <span>Log Out</span>
+          </button>
+        </div>
+      </header>
+
+      {/* Sub Header / Breadcrumb & Title */}
+      <div className="analytics-sub-header">
         <Link to="/" className="back-btn">
           <ArrowLeft size={16} /> Back to Dashboard
         </Link>
@@ -110,11 +158,11 @@ const Analytics = () => {
               rel="noopener noreferrer"
               className="analytics-short-url"
             >
-              {BACKEND_URL}/{url.shortCode} <ExternalLink size={12} style={{ display: "inline" }} />
+              {BACKEND_URL}/{url.shortCode} <ExternalLink size={12} style={{ display: "inline", marginLeft: "4px" }} />
             </a>
           </span>
         </div>
-      </header>
+      </div>
 
       {/* Info Card */}
       <section className="url-details-panel glass-panel">
