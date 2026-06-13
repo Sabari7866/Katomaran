@@ -11,18 +11,16 @@
 
 > ⚠️ **Note on Video Demonstration:**
 > As this project is fully automated and verified via advanced AI agent workflows, we have provided a complete step-by-step browser walkthrough recording along with interactive visual verification screenshots captured directly from our testing sessions.
-> 
-> 🔗 **Detailed Feature Walkthrough:** For a complete breakdown of code modifications and visual step-by-step validation, please refer to our project-level [walkthrough.md](./walkthrough.md).
 
 ### 🎬 Browser Session Video Recordings
 
-You can view the full interactive walk-through and features demo via the recorded browser sessions:
+You can view the full interactive walkthrough and features demo via the recorded browser sessions:
 
-* **Full Feature Demo Recording (Latest V2):**  
-  ![SnapLink Demo Recording V2](./docs/screenshots/snaplink_demo_v2_1781341044333.webp)
+#### Full Feature Demo Recording (Latest V2)
+![SnapLink Demo Recording V2](./docs/screenshots/snaplink_demo_v2_1781341044333.webp)
 
-* **Hosted App Walkthrough Recording (V1):**  
-  ![Validation Session Recording](./docs/screenshots/hosted_app_demo_1781332914398.webp)
+#### Hosted App Walkthrough Recording (V1)
+![Validation Session Recording](./docs/screenshots/hosted_app_demo_1781332914398.webp)
 
 ---
 
