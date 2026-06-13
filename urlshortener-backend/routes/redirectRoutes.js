@@ -272,7 +272,7 @@ function getPasswordPage(shortCode, errorMsg = "") {
       <h1>Link is Protected</h1>
       <p class="subtitle">This URL is password secured. Please enter the password to proceed.</p>
       
-      <form action="/${shortCode}" method="POST">
+      <form action="/${shortCode}" method="POST" autocomplete="off">
         ${errorMsg ? `
         <div class="error-message">
           <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -284,7 +284,7 @@ function getPasswordPage(shortCode, errorMsg = "") {
         
         <div class="form-group">
           <label for="password">Enter Password</label>
-          <input type="password" id="password" name="password" class="input-field" placeholder="••••••••" required autofocus>
+          <input type="password" id="password" name="password" class="input-field" placeholder="••••••••" required autofocus autocomplete="new-password">
         </div>
         
         <button type="submit" class="submit-btn">Unlock & Redirect</button>

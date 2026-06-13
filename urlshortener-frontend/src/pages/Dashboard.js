@@ -288,7 +288,7 @@ const Dashboard = () => {
         
         {formError && <div className="auth-error" style={{ marginBottom: "20px" }}>{formError}</div>}
         
-        <form onSubmit={handleShorten} className="shortener-form" autoComplete="off">
+        <form onSubmit={handleShorten} className="shortener-form" autoComplete="off" data-lpignore="true">
           <div className="input-main-group">
             <div className="input-main-wrapper">
               <Link2 className="input-main-icon" />
@@ -351,7 +351,9 @@ const Dashboard = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={shortening}
-                autoComplete="new-password"
+                autoComplete="off"
+                data-lpignore="true"
+                data-form-type="other"
               />
             </div>
           </div>
