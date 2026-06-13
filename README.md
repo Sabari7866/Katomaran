@@ -556,7 +556,22 @@ When visiting a password-protected short link, users see a branded lock screen w
   "browser": "Chrome",
   "referer": "Direct",
   "createdAt": "2026-06-13T08:55:00.000Z"
-}
+```
+
+### Server Console Logs
+
+Backend console output showing server boot, database connection, API actions, and redirection handling:
+
+```text
+[nodemon] starting `node server.js`
+🚀 Server running on port 5000 in development mode
+✅ MongoDB Connected successfully
+
+GET /api/urls?page=1&limit=10 200 OK - 35ms (Auth user fetched URLs list)
+POST /api/urls 201 Created - 145ms (Auth user generated custom alias 'git-pass' for https://github.com)
+GET /git-pass 200 OK (Password check required: Branded Lock screen HTML served) - 18ms
+POST /git-pass 302 Found (Password verified successfully: Registered visit & redirecting to destination) - 95ms
+GET /api/analytics/6487a5f82c... 200 OK - 28ms (Auth user loaded real-time click metrics & visit logs)
 ```
 
 ---
