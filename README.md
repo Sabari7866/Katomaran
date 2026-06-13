@@ -11,7 +11,7 @@
 
 > ⚠️ **A video submission is required for review.**
 
-🎬 **[Watch the full project demo on YouTube / Loom](#)** *(Link to be added — Loom/YouTube recording of the hosted app walkthrough)*
+🎬 **[Watch the full project demo on YouTube / Loom](#)** *(Upload your Loom/YouTube recording and replace this link)*
 
 The demo covers:
 - User registration and login
@@ -21,6 +21,59 @@ The demo covers:
 - Real-time analytics (clicks, device, browser, referrer breakdowns)
 - Password-protected link redirect flow
 - Settings page (update profile, change password)
+
+---
+
+## 🖼️ Visual Verification — App Screenshots
+
+All features below have been verified on the **live hosted application** at [https://urlshortener001.vercel.app](https://urlshortener001.vercel.app).
+
+### 1. Dashboard — Shortener Form with All Options Visible
+The shortener form shows Custom Alias, Link Expiry Date, and Link Password fields open by default — no scrolling or extra clicks needed.
+
+![Dashboard Options Form](docs/screenshots/dashboard_options.png)
+
+---
+
+### 2. Dashboard — Shortened Links Table with 🔒 Lock Icon
+Password-protected links display a purple lock icon next to the short URL in the table.
+
+![Shortened Link with Lock Icon](docs/screenshots/link_with_lock.png)
+
+---
+
+### 3. QR Code Modal
+Clicking the QR icon generates a scannable QR code for any link. Users can download it as PNG.
+
+![QR Code Modal](docs/screenshots/qr_code.png)
+
+---
+
+### 4. Analytics Page — Charts & Breakdown
+Per-link analytics showing clicks over time, device breakdown, browser breakdown, and top referrers.
+
+![Analytics Page](docs/screenshots/analytics_detail.png)
+
+---
+
+### 5. Password-Protected Link — Lock Screen
+When a user visits a password-protected short URL, they are shown a branded lock screen with the SnapLink logo.
+
+![Premium Lock Screen](docs/screenshots/lock_screen.png)
+
+---
+
+### 6. Lock Screen — Incorrect Password Error
+If the user enters the wrong password, a red error message is displayed with a shake animation.
+
+![Incorrect Password Error](docs/screenshots/wrong_password.png)
+
+---
+
+### 7. Successful Redirect After Password Unlock
+After the correct password is entered, the click is recorded and the user is redirected to the destination URL.
+
+![Success Redirect](docs/screenshots/redirect_success.png)
 
 ---
 
