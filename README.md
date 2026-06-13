@@ -11,6 +11,8 @@
 
 > ⚠️ **Note on Video Demonstration:**
 > As this project is fully automated and verified via advanced AI agent workflows, we have provided a complete step-by-step browser walkthrough recording along with interactive visual verification screenshots captured directly from our testing sessions.
+> 
+> 🔗 **Detailed Feature Walkthrough:** For a complete breakdown of code modifications and visual step-by-step validation, please refer to our project-level [walkthrough.md](./walkthrough.md).
 
 ### 🎬 Browser Session Video Recordings
 
