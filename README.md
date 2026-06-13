@@ -3,7 +3,8 @@
 > A full-stack, production-ready URL shortener with real-time analytics, password protection, QR code generation, link expiry, and a stunning glassmorphism UI.
 
 **Live Demo:** [https://urlshortener001.vercel.app](https://urlshortener001.vercel.app)  
-**Backend API:** [https://urlshortener-api.vercel.app](https://urlshortener-api.vercel.app)
+**Backend API:** [https://urlshortener-api.vercel.app](https://urlshortener-api.vercel.app)  
+📖 **[Read the Development & Evolution Journal](./DEVELOPMENT_JOURNAL.md)** to inspect design shifts, autofill bypass methods, and code refactoring choices.
 
 ---
 
