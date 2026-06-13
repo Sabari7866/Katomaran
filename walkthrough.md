@@ -51,6 +51,15 @@ The changes have been thoroughly validated with the browser subagent:
 #### 6. Success Redirect to Destination
 ![Success Redirect to Destination](./docs/screenshots/google_redirected_success_1781328223213.png)
 
+#### 7. MongoDB Atlas Database Verification
+Here are the live MongoDB Atlas collections verifying the stored document schemas:
+
+* **Users Collection Schema**:
+  ![MongoDB Atlas Users Collection](./docs/screenshots/mongodb_users_collection.png)
+
+* **Short URLs Collection Schema**:
+  ![MongoDB Atlas Short URLs Collection](./docs/screenshots/mongodb_shorturls_collection.png)
+
 ---
 
 ### 🎬 Browser Session Video Recordings

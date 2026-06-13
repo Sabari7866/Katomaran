@@ -520,6 +520,18 @@ When visiting a password-protected short link, users see a branded lock screen w
 
 > 📁 **Database JSON Exports:** Raw database collection dump files are available in [docs/db-exports/](./docs/db-exports/) (`users.json`, `shorturls.json`, and `visits.json`).
 
+#### 📸 MongoDB Atlas Data Explorer Verification
+
+Here are the live MongoDB Atlas database entries verifying the document schemas and click/redirect details:
+
+##### Users Collection
+![MongoDB Atlas Users Collection](./docs/screenshots/mongodb_users_collection.png)
+
+##### Short URLs Collection
+![MongoDB Atlas Short URLs Collection](./docs/screenshots/mongodb_shorturls_collection.png)
+
+---
+
 **users collection:**
 ```json
 {
