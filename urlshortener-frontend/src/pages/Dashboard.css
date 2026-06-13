@@ -1,7 +1,7 @@
 .dashboard-container {
   min-height: 100vh;
   padding: 40px 24px;
-  max-width: 1200px;
+  max-width: 1360px;
   margin: 0 auto;
   animation: fadeIn 0.5s ease-out;
 }
@@ -267,7 +267,7 @@
 }
 
 .urls-table th {
-  padding: 16px 20px;
+  padding: 12px 12px;
   font-family: var(--font-display);
   font-size: 13px;
   font-weight: 600;
@@ -278,7 +278,7 @@
 }
 
 .urls-table td {
-  padding: 20px;
+  padding: 12px 12px;
   font-size: 14px;
   border-bottom: 1px solid var(--border-color);
   vertical-align: middle;
@@ -289,7 +289,7 @@
 }
 
 .url-original-cell {
-  max-width: 250px;
+  max-width: 150px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -330,12 +330,12 @@
 
 .actions-cell {
   display: flex;
-  gap: 8px;
+  gap: 6px;
 }
 
 .action-btn {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border-radius: 8px;
   display: flex;
   align-items: center;

@@ -359,10 +359,10 @@ const Dashboard = () => {
       </section>
 
       {/* Main Grid: Left is URL list, Right is Sidebar Stats */}
-      <div className="dashboard-grid-layout">
+      <div className="dashboard-layout-grid">
         
         {/* Left Column: URLs list */}
-        <div className="urls-main-col">
+        <div className="dashboard-main-col">
           <section className="urls-section glass-panel">
             <div className="urls-header-row">
               <h2 className="section-title">Your Shortened Links</h2>
@@ -536,7 +536,7 @@ const Dashboard = () => {
         </div>
 
         {/* Right Column: Sidebar Stats */}
-        <div className="stats-sidebar-col">
+        <div className="dashboard-sidebar-col">
           <div className="stat-sidebar-card glass-panel">
             <div className="stat-sidebar-content">
               <span className="stat-label">Total Links</span>
