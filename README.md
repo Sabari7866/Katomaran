@@ -1,452 +1,598 @@
-# 🔗 SnapLink — URL Shortener with Analytics
+# SnapLink — Premium URL Shortener & Real-Time Analytics
 
-A full-stack **MERN** (MongoDB, Express, React, Node.js) URL Shortener application with real-time analytics, QR code generation, custom aliases, and link expiry tracking. Built for the Hackathon.
+> A full-stack, production-ready URL shortener with real-time analytics, password protection, QR code generation, link expiry, and a stunning glassmorphism UI.
 
-![Node.js](https://img.shields.io/badge/Node.js-18+-339933?logo=node.js&logoColor=white)
-![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)
-![MongoDB](https://img.shields.io/badge/MongoDB-5.0+-47A248?logo=mongodb&logoColor=white)
-![Express](https://img.shields.io/badge/Express-5.x-000000?logo=express&logoColor=white)
-![License](https://img.shields.io/badge/License-ISC-blue)
+**Live Demo:** [https://urlshortener001.vercel.app](https://urlshortener001.vercel.app)  
+**Backend API:** [https://urlshortener-api.vercel.app](https://urlshortener-api.vercel.app)
 
 ---
 
-## 📑 Table of Contents
+## 📹 Demo Video
 
-- [Features](#-features)
-- [Architecture Diagram](#-architecture-diagram)
-- [AI Planning Document](#-ai-planning-document)
-- [Tech Stack](#-tech-stack)
-- [Project Structure](#-project-structure)
-- [Setup Instructions](#-setup-instructions)
-- [Environment Variables](#-environment-variables)
-- [API Documentation](#-api-documentation)
-- [Sample Outputs](#-sample-outputs)
-- [Assumptions Made](#-assumptions-made)
-- [Demo Video](#-demo-video)
-- [License](#-license)
+> ⚠️ **A video submission is required for review.**
+
+🎬 **[Watch the full project demo on YouTube / Loom](#)** *(Link to be added — Loom/YouTube recording of the hosted app walkthrough)*
+
+The demo covers:
+- User registration and login
+- Shortening a URL (with custom alias, expiry date, and password)
+- Viewing shortened links with lock icon indicators
+- QR code generation and download
+- Real-time analytics (clicks, device, browser, referrer breakdowns)
+- Password-protected link redirect flow
+- Settings page (update profile, change password)
+
+---
+
+## 📋 Table of Contents
+
+1. [Features](#-features)
+2. [AI Planning Document](#-ai-planning-document)
+3. [Architecture Diagram](#-architecture-diagram)
+4. [Tech Stack](#-tech-stack)
+5. [Setup Instructions](#-setup-instructions)
+6. [Environment Variables](#-environment-variables)
+7. [API Reference](#-api-reference)
+8. [Assumptions Made](#-assumptions-made)
+9. [Sample Output](#-sample-output)
+10. [Project Structure](#-project-structure)
 
 ---
 
 ## ✨ Features
 
-### Mandatory Features
-| Feature | Description |
-|---|---|
-| **Authentication** | Secure user signup & login with JWT tokens and bcrypt password hashing |
-| **Protected Routes** | Dashboard and analytics pages are protected; each user manages only their own URLs |
-| **URL Shortening** | Submit a long URL and generate a unique short URL (using nanoid) |
-| **URL Validation** | Server-side validation ensures proper URL format before shortening |
-| **Server-Side Redirect** | Clicking a short URL triggers a server-side 302 redirect to the original |
-| **User Dashboard** | View all created short URLs with original URL, short URL, created date, total clicks |
-| **Delete URLs** | Ability to delete any shortened URL |
-| **Copy to Clipboard** | One-click copy of short URLs from the dashboard |
-| **Click Analytics** | Track number of clicks per short URL with timestamps |
-| **Analytics Page** | Detailed analytics per URL: total clicks, last visited time, visit history |
-| **Responsive UI** | Fully responsive glassmorphism design with loading/error/success states |
+### 🔗 URL Shortening
+- Paste any long URL and generate a short, shareable link instantly
+- Custom alias support (e.g. `yourdomain.com/my-brand`)
+- Short code is auto-generated using `nanoid` if no alias is provided
 
-### Bonus Features
-| Feature | Description |
-|---|---|
-| **Custom Alias** | Set a custom short code (e.g., `my-portfolio`) instead of auto-generated |
-| **QR Code Generation** | Generate and download QR codes for any shortened URL |
-| **Link Expiry** | Set an expiry date after which the link deactivates automatically |
-| **Device/Browser Analytics** | Track visitor device type (Desktop/Mobile/Tablet) and browser |
-| **Daily Click Trends** | Interactive area chart showing click trends over the last 7 days |
-| **Edit Destination URL** | Update the original destination URL of an existing shortened link |
-| **Docker Deployment** | Full Docker Compose setup for one-command deployment |
+### 🔐 Password Protection
+- Optionally set a password on any shortened link
+- Users visiting the link are shown a branded lock screen to enter the password
+- Passwords are hashed using `bcryptjs` before storage — never stored in plaintext
+- Lock icon indicator shown next to protected links in the dashboard
 
----
+### ⏰ Link Expiry
+- Set an optional expiry date/time on any link
+- Expired links automatically become inactive and show an expiry error page
+- Expiry status clearly shown in the dashboard table
 
-## 🏗️ Architecture Diagram
+### 📊 Real-Time Analytics
+- Per-link analytics page showing:
+  - Total clicks over time (line chart)
+  - Device breakdown: Desktop / Mobile / Tablet (pie chart)
+  - Browser breakdown: Chrome / Firefox / Safari / Edge / Other (bar chart)
+  - Top referrers (table)
+- Summary stats: Total Links, Total Redirects, Active Links
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                        CLIENT (Browser)                         │
-│  ┌──────────────────────────────────────────────────────────┐   │
-│  │              React Frontend (Port 3000)                  │   │
-│  │  ┌────────────┐  ┌───────────┐  ┌───────────────────┐   │   │
-│  │  │ Login/     │  │ Dashboard │  │  Analytics Page   │   │   │
-│  │  │ Signup     │  │  (CRUD)   │  │  (Charts/Tables)  │   │   │
-│  │  └─────┬──────┘  └─────┬─────┘  └────────┬──────────┘   │   │
-│  │        │               │                  │              │   │
-│  │        └───────────────┼──────────────────┘              │   │
-│  │                        │                                 │   │
-│  │              ┌─────────▼─────────┐                       │   │
-│  │              │   Axios API Layer │                       │   │
-│  │              │  (JWT Interceptor)│                       │   │
-│  │              └─────────┬─────────┘                       │   │
-│  └────────────────────────┼─────────────────────────────────┘   │
-└───────────────────────────┼─────────────────────────────────────┘
-                            │ HTTP (REST API)
-                            ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                   EXPRESS BACKEND (Port 5000)                    │
-│                                                                 │
-│  ┌──────────┐  ┌──────────┐  ┌───────────┐  ┌──────────────┐   │
-│  │   Auth   │  │   URL    │  │ Analytics │  │  Redirect    │   │
-│  │  Routes  │  │  Routes  │  │  Routes   │  │  Routes      │   │
-│  │ /api/auth│  │ /api/urls│  │/api/analytics│ /:shortCode  │   │
-│  └────┬─────┘  └────┬─────┘  └─────┬─────┘  └──────┬───────┘   │
-│       │              │              │               │           │
-│  ┌────▼──────────────▼──────────────▼───────────────▼───────┐   │
-│  │                   Middleware Layer                        │   │
-│  │    ┌──────────┐  ┌──────────┐  ┌──────────┐              │   │
-│  │    │  Helmet  │  │  CORS    │  │ JWT Auth │              │   │
-│  │    └──────────┘  └──────────┘  └──────────┘              │   │
-│  └──────────────────────────┬───────────────────────────────┘   │
-│                             │                                   │
-│  ┌──────────────────────────▼───────────────────────────────┐   │
-│  │                   Mongoose Models                        │   │
-│  │    ┌──────────┐  ┌───────────┐  ┌──────────┐            │   │
-│  │    │   User   │  │  ShortUrl │  │  Visit   │            │   │
-│  │    └──────────┘  └───────────┘  └──────────┘            │   │
-│  └──────────────────────────┬───────────────────────────────┘   │
-└─────────────────────────────┼───────────────────────────────────┘
-                              │
-                              ▼
-                   ┌─────────────────────┐
-                   │   MongoDB Database  │
-                   │   (Port 27017)      │
-                   │  ┌───────────────┐  │
-                   │  │  Collections: │  │
-                   │  │  - users      │  │
-                   │  │  - shorturls  │  │
-                   │  │  - visits     │  │
-                   │  └───────────────┘  │
-                   └─────────────────────┘
-```
+### 📱 QR Code Generation
+- Generate a QR code for any shortened link with one click
+- Download QR code as PNG
+- QR code modal with a clean overlay UI
 
-### Data Flow
+### ✏️ Link Management
+- Edit the destination URL of any existing short link
+- Delete links
+- Search/filter links by original URL, short code, or alias
+- Paginated links table (10 per page)
 
-1. **URL Shortening**: User → React Form → POST `/api/urls` → Validate → Generate nanoid → Save to MongoDB → Return short URL
-2. **Redirect**: Visitor → GET `/:shortCode` → Lookup in DB → Log visit details → 302 Redirect to original URL
-3. **Analytics**: User → GET `/api/analytics/:urlId` → Aggregate visits → Return device/browser/trend data → Render charts
+### 👤 User Accounts
+- JWT-based authentication (register, login, logout)
+- Protected routes — dashboard only accessible when logged in
+- Settings page: update username/email, change password
+- Tokens stored in `localStorage`
+
+### 🎨 Premium UI/UX
+- Dark glassmorphism design with gradient accents
+- Responsive layout (desktop + mobile)
+- Smooth animations and micro-interactions
+- Outfit font (Google Fonts) for modern typography
+- Color-coded stats cards, badges, and action buttons
 
 ---
 
 ## 🤖 AI Planning Document
 
-### Phase 1: Planning & Design
-- Identified all mandatory and bonus features from the hackathon problem statement
-- Designed the database schema with 3 collections: Users, ShortUrls, Visits
-- Planned RESTful API endpoints with JWT-based authentication
-- Chose a dark-themed glassmorphism UI design for a premium look
+### Problem Statement
+Users need a way to share long, complex URLs in a clean, trackable format. Existing tools either lack analytics, require payment, or have poor UIs. The goal is to build a free, full-featured URL shortener with analytics, security features, and a beautiful interface.
 
-### Phase 2: Feature List
+### Planning Phases (AI-Assisted Workflow)
 
-#### Core Features Implemented
-1. **Authentication System** — JWT-based auth with bcrypt password hashing, login/signup forms with validation
-2. **URL Shortening Engine** — nanoid-based short code generation with uniqueness verification, custom alias support
-3. **Server-Side Redirect** — Express route handler that logs visit data and performs 302 redirect
-4. **Dashboard** — Paginated URL listing with stats cards, CRUD operations, QR code modal
-5. **Analytics** — Per-URL analytics with Recharts area charts, device/browser breakdowns, visit logs
+#### Phase 1: Requirements Gathering
+Using AI tools to define core requirements:
+- **Must Have:** URL shortening, user auth, redirect, click tracking
+- **Should Have:** Custom aliases, expiry dates, QR codes, analytics charts
+- **Nice to Have:** Password protection, browser/device breakdown, referrer tracking
 
-#### Bonus Features Implemented
-6. **Custom Alias** — Alphanumeric validation, uniqueness check, 3-30 character limit
-7. **QR Code Generation** — SVG QR codes via `qrcode.react` with PNG download
-8. **Link Expiry** — Datetime picker, auto-deactivation on access after expiry
-9. **Device/Browser Analytics** — User-agent parsing for device type and browser detection
-10. **Daily Click Trends** — 7-day area chart with zero-fill for days without clicks
-11. **Edit Destination URL** — Update original URL of existing shortened links
-12. **Docker Deployment** — Multi-service docker-compose with MongoDB, backend, frontend
+#### Phase 2: Architecture Design
+Decided on a **decoupled architecture**:
+- React SPA frontend (hosted on Vercel)
+- Express.js REST API backend (hosted on Vercel Serverless)
+- MongoDB Atlas cloud database
 
-### Phase 3: Development Workflow
-1. Set up MongoDB schema and Express server
-2. Built authentication routes with JWT
-3. Created URL shortening CRUD API
-4. Implemented redirect handler with visit logging
-5. Built analytics aggregation pipeline
-6. Developed React frontend with routing
-7. Styled with custom CSS (glassmorphism dark theme)
-8. Added bonus features (QR, expiry, custom alias, edit URL)
-9. Dockerized the application
+Reasoning: This allows independent scaling and deployment of front/back.
 
-### Phase 4: Testing & Verification
-- Manual testing of all CRUD operations
-- Verified redirect flow logs visits correctly
-- Tested responsive layout on different viewport sizes
-- Validated form error states and loading indicators
+#### Phase 3: Data Modelling
+Three MongoDB collections were designed:
+
+**User**
+```js
+{ username, email, password (bcrypt hashed), createdAt }
+```
+
+**ShortUrl**
+```js
+{ 
+  user (ref), originalUrl, shortCode, customAlias,
+  clicks, isActive, expiryDate, password (bcrypt hashed),
+  lastVisited, createdAt
+}
+```
+
+**Visit**
+```js
+{ shortUrl (ref), ipAddress, userAgent, device, browser, referer, createdAt }
+```
+
+#### Phase 4: API Design
+RESTful routes were planned:
+- `POST /api/auth/register` — register
+- `POST /api/auth/login` — login
+- `GET /api/urls` — list user's URLs (paginated)
+- `POST /api/urls` — create short URL
+- `PUT /api/urls/:id` — update destination
+- `DELETE /api/urls/:id` — delete URL
+- `GET /api/analytics/:id` — get link analytics
+- `GET /:shortCode` — redirect (with password check)
+- `POST /:shortCode` — password verification + redirect
+
+#### Phase 5: UI/UX Design
+- Dark theme with glassmorphism cards
+- Dashboard layout: full-width shortener form → stats row → links table
+- Analytics page: charts rendered with Recharts
+- Lock screen: branded HTML page served directly by backend on redirect
+
+#### Phase 6: Security Hardening
+- Helmet.js for HTTP security headers
+- CORS configuration
+- JWT with expiry
+- bcryptjs for password and link-password hashing
+- URL validation with `validator` package
+- Input sanitization and rate-limiting headers
 
 ---
 
-## 🛠️ Tech Stack
+## 🏗 Architecture Diagram
 
-| Layer | Technology |
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                         USER BROWSER                            │
+│                                                                 │
+│  ┌──────────────────────────────────────────────────────────┐   │
+│  │           React SPA (Vercel CDN)                         │   │
+│  │                                                          │   │
+│  │  /login       → LoginPage.js                             │   │
+│  │  /signup      → SignupPage.js                            │   │
+│  │  /            → Dashboard.js  (Protected)                │   │
+│  │  /analytics/:id → Analytics.js (Protected)              │   │
+│  │  /settings    → SettingsPage.js (Protected)              │   │
+│  │                                                          │   │
+│  │  Components: ProtectedRoute.js                           │   │
+│  │  API layer:  src/api/api.js  (axios + JWT headers)       │   │
+│  └──────────────────┬───────────────────────────────────────┘   │
+└─────────────────────┼───────────────────────────────────────────┘
+                      │ HTTPS REST API calls
+                      ▼
+┌─────────────────────────────────────────────────────────────────┐
+│              Express.js Backend (Vercel Serverless)             │
+│                                                                 │
+│  server.js                                                      │
+│  ├── Middleware: helmet, cors, express.json, express.urlencoded │
+│  ├── /api/auth      → authRoutes.js                            │
+│  │   ├── POST /register  (bcrypt hash + JWT sign)              │
+│  │   └── POST /login     (bcrypt compare + JWT sign)           │
+│  ├── /api/urls      → urlRoutes.js                             │
+│  │   ├── GET /           (paginated list, auth required)        │
+│  │   ├── POST /          (create + nanoid short code)          │
+│  │   ├── PUT /:id        (update destination, auth required)    │
+│  │   └── DELETE /:id     (soft delete, auth required)          │
+│  ├── /api/analytics → analyticsRoutes.js                       │
+│  │   └── GET /:id        (clicks, devices, browsers, referrers)│
+│  └── /:shortCode    → redirectRoutes.js                        │
+│      ├── GET  /    (check password → serve lock screen HTML)   │
+│      └── POST /    (verify password → record visit → redirect) │
+│                                                                 │
+│  Models (Mongoose):                                             │
+│  ├── User.js     (email, username, bcrypt password)            │
+│  ├── ShortUrl.js (shortCode, originalUrl, password, expiry)    │
+│  └── Visit.js    (device, browser, referer, IP, timestamp)     │
+└─────────────────────────────────────────────────────────────────┘
+                      │
+                      │ Mongoose ODM
+                      ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    MongoDB Atlas (Cloud)                        │
+│                                                                 │
+│   Collections:  users │ shorturls │ visits                     │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 🛠 Tech Stack
+
+### Frontend
+| Technology | Purpose |
 |---|---|
-| **Frontend** | React 18, React Router v6, Recharts, Lucide Icons, qrcode.react |
-| **Backend** | Node.js, Express 5, Mongoose, JWT, bcryptjs, nanoid, validator, helmet |
-| **Database** | MongoDB 5.0+ |
-| **DevOps** | Docker, Docker Compose |
-| **Styling** | Custom CSS (Glassmorphism, CSS Variables, Responsive) |
-| **Fonts** | Google Fonts (Inter, Outfit) |
+| React 18 | UI framework (SPA) |
+| React Router v6 | Client-side routing |
+| Recharts | Analytics charts (line, bar, pie) |
+| Lucide React | Icon library |
+| qrcode.react | QR code generation |
+| Axios | HTTP client |
+| Vanilla CSS | Custom styling (glassmorphism) |
+| Google Fonts (Outfit) | Typography |
 
----
+### Backend
+| Technology | Purpose |
+|---|---|
+| Node.js | Runtime |
+| Express.js v5 | REST API framework |
+| MongoDB | Database |
+| Mongoose | ODM (schemas, validation) |
+| bcryptjs | Password hashing |
+| jsonwebtoken | JWT auth tokens |
+| nanoid | Short code generation |
+| validator | URL format validation |
+| helmet | HTTP security headers |
+| cors | Cross-origin resource sharing |
+| dotenv | Environment configuration |
 
-## 📁 Project Structure
-
-```
-SnapLink/
-├── README.md                          # This file
-├── .gitignore                         # Root gitignore
-├── .env.example                       # Environment variables reference
-├── docker-compose.yml                 # Docker multi-service config
-│
-├── urlshortener-backend/              # Express.js API Server
-│   ├── .env.example                   # Backend env template
-│   ├── .gitignore                     # Backend gitignore
-│   ├── Dockerfile                     # Backend Docker image
-│   ├── package.json                   # Dependencies & scripts
-│   ├── server.js                      # Express app entry point
-│   ├── middleware/
-│   │   └── authMiddleware.js          # JWT verification middleware
-│   ├── models/
-│   │   ├── User.js                    # User schema (bcrypt hashing)
-│   │   ├── ShortUrl.js                # Short URL schema
-│   │   └── Visit.js                   # Visit log schema
-│   └── routes/
-│       ├── authRoutes.js              # POST /register, /login
-│       ├── urlRoutes.js               # CRUD /api/urls
-│       ├── analyticsRoutes.js         # GET /api/analytics
-│       └── redirectRoutes.js          # GET /:shortCode (redirect)
-│
-└── urlshortener-frontend/             # React SPA
-    ├── .env.example                   # Frontend env template
-    ├── .gitignore                     # Frontend gitignore
-    ├── Dockerfile                     # Frontend Docker image
-    ├── package.json                   # Dependencies & scripts
-    ├── public/
-    │   └── index.html                 # HTML template
-    └── src/
-        ├── index.js                   # React entry point
-        ├── index.css                  # Global CSS (design system)
-        ├── App.js                     # Router configuration
-        ├── api/
-        │   └── api.js                 # Axios API layer
-        ├── components/
-        │   └── ProtectedRoute.js      # Auth route guard
-        └── pages/
-            ├── LoginPage.js           # Login form
-            ├── SignupPage.js          # Registration form
-            ├── AuthPages.css          # Auth page styles
-            ├── Dashboard.js           # Main dashboard
-            ├── Dashboard.css          # Dashboard styles
-            ├── Analytics.js           # URL analytics page
-            └── Analytics.css          # Analytics styles
-```
+### Infrastructure
+| Service | Purpose |
+|---|---|
+| Vercel | Frontend & Backend hosting |
+| MongoDB Atlas | Cloud database |
+| GitHub | Version control |
 
 ---
 
 ## 🚀 Setup Instructions
 
 ### Prerequisites
-- **Node.js** v18 or higher
-- **MongoDB** running locally (or via Docker)
-- **npm** (comes with Node.js)
+- Node.js v18+
+- npm v9+
+- MongoDB Atlas account (or local MongoDB)
+- Git
 
-### Option 1: Local Development
+### 1. Clone the repository
 
-#### 1. Clone the repository
 ```bash
-git clone https://github.com/Sabari7866/SnapLink.git
-cd SnapLink
+git clone https://github.com/Sabari7866/Katomaran.git
+cd Katomaran
 ```
 
-#### 2. Start MongoDB
-Make sure MongoDB is running on `localhost:27017`. You can use:
-```bash
-# Using Docker for MongoDB only
-docker run -d -p 27017:27017 --name mongo mongo:5.0
-```
+### 2. Backend Setup
 
-#### 3. Set up Backend
 ```bash
 cd urlshortener-backend
-
-# Copy environment template
-cp .env.example .env
-# Edit .env with your values (defaults work for local dev)
-
-# Install dependencies
 npm install
-
-# Start development server
-npm run dev
 ```
-Backend will run on **http://localhost:5000**
 
-#### 4. Set up Frontend
+Create a `.env` file in `urlshortener-backend/`:
+
+```env
+PORT=5000
+MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/urlshortener
+JWT_SECRET=your_super_secret_jwt_key_here
+FRONTEND_URL=http://localhost:3000
+```
+
+Start the backend server:
+
 ```bash
-cd urlshortener-frontend
+npm run dev       # Development (with nodemon auto-reload)
+# OR
+npm start         # Production
+```
 
-# Copy environment template
-cp .env.example .env
-# Edit .env if needed (defaults work for local dev)
+The backend runs at `http://localhost:5000`
 
-# Install dependencies
+### 3. Frontend Setup
+
+```bash
+cd ../urlshortener-frontend
 npm install
+```
 
-# Start development server
+Create a `.env` file in `urlshortener-frontend/`:
+
+```env
+REACT_APP_BACKEND_URL=http://localhost:5000
+```
+
+Start the frontend:
+
+```bash
 npm start
 ```
-Frontend will run on **http://localhost:3000**
 
-### Option 2: Docker Compose (One Command)
+The frontend runs at `http://localhost:3000`
+
+### 4. Docker Setup (Optional)
+
+If you prefer Docker:
 
 ```bash
-# From the project root
+# From the root Katomaran/ directory
 docker-compose up --build
 ```
 
-This starts:
-- **MongoDB** on port 27017
-- **Backend** on port 5000
-- **Frontend** on port 3000
+This will start both the backend and frontend containers.
 
-To stop: `docker-compose down`
+### 5. Access the App
+
+- Open `http://localhost:3000` in your browser
+- Register a new account
+- Start shortening URLs!
 
 ---
 
-## 🔐 Environment Variables
+## 🔑 Environment Variables
 
 ### Backend (`urlshortener-backend/.env`)
 
-| Variable | Description | Default |
+| Variable | Description | Example |
 |---|---|---|
 | `PORT` | Server port | `5000` |
-| `MONGODB_URI` | MongoDB connection string | `mongodb://localhost:27017/urlshortener` |
-| `JWT_SECRET` | Secret key for JWT signing | *(must change in production)* |
-| `FRONTEND_URL` | Frontend origin for CORS | `http://localhost:3000` |
+| `MONGODB_URI` | MongoDB connection string | `mongodb+srv://...` |
+| `JWT_SECRET` | Secret key for JWT signing | `my-secret-key` |
+| `FRONTEND_URL` | Frontend base URL (for redirect pages) | `http://localhost:3000` |
 
 ### Frontend (`urlshortener-frontend/.env`)
 
-| Variable | Description | Default |
+| Variable | Description | Example |
 |---|---|---|
-| `REACT_APP_API_URL` | Backend API base URL | `http://localhost:5000/api` |
-| `REACT_APP_BACKEND_URL` | Backend base URL (for short link display) | `http://localhost:5000` |
-| `BROWSER` | Disable auto-open browser | `none` |
+| `REACT_APP_BACKEND_URL` | Backend API base URL | `http://localhost:5000` |
 
 ---
 
-## 📡 API Documentation
+## 📡 API Reference
 
 ### Authentication
 
-| Method | Endpoint | Body | Description |
-|---|---|---|---|
-| `POST` | `/api/auth/register` | `{ username, email, password }` | Register a new user |
-| `POST` | `/api/auth/login` | `{ email, password }` | Log in and receive JWT |
+#### POST `/api/auth/register`
+```json
+// Request
+{ "username": "john", "email": "john@example.com", "password": "Pass@123" }
 
-### URL Management (Protected - requires `Authorization: Bearer <token>`)
+// Response 201
+{ "token": "jwt...", "user": { "id": "...", "username": "john", "email": "..." } }
+```
 
-| Method | Endpoint | Body | Description |
-|---|---|---|---|
-| `POST` | `/api/urls` | `{ originalUrl, customAlias?, expiryDate? }` | Create a short URL |
-| `GET` | `/api/urls?page=1&limit=10` | — | Get paginated user URLs |
-| `PUT` | `/api/urls/:id` | `{ originalUrl }` | Update destination URL |
-| `DELETE` | `/api/urls/:id` | — | Delete a short URL |
+#### POST `/api/auth/login`
+```json
+// Request
+{ "email": "john@example.com", "password": "Pass@123" }
 
-### Analytics (Protected)
+// Response 200
+{ "token": "jwt...", "user": { "id": "...", "username": "john", "email": "..." } }
+```
 
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/api/analytics/dashboard/summary` | Get dashboard summary stats |
-| `GET` | `/api/analytics/:urlId` | Get detailed analytics for a URL |
+### URL Management (Requires `Authorization: Bearer <token>`)
+
+#### GET `/api/urls?page=1&limit=10`
+```json
+// Response 200
+{
+  "urls": [ { "_id": "...", "shortCode": "abc123", "originalUrl": "https://...", "clicks": 5, ... } ],
+  "totalPages": 3,
+  "currentPage": 1
+}
+```
+
+#### POST `/api/urls`
+```json
+// Request
+{ "originalUrl": "https://google.com", "customAlias": "my-link", "expiryDate": "2026-12-31T00:00:00Z", "password": "secret" }
+
+// Response 201
+{ "_id": "...", "shortCode": "my-link", "originalUrl": "https://google.com", ... }
+```
+
+#### PUT `/api/urls/:id`
+```json
+// Request
+{ "originalUrl": "https://new-destination.com" }
+// Response 200 — updated URL object
+```
+
+#### DELETE `/api/urls/:id`
+```json
+// Response 200
+{ "message": "URL deleted successfully" }
+```
+
+### Analytics (Requires Auth)
+
+#### GET `/api/analytics/:id`
+```json
+// Response 200
+{
+  "url": { "shortCode": "abc123", "clicks": 42, ... },
+  "clicksOverTime": [ { "date": "2026-06-01", "count": 5 }, ... ],
+  "deviceBreakdown": [ { "_id": "Desktop", "count": 30 }, ... ],
+  "browserBreakdown": [ { "_id": "Chrome", "count": 25 }, ... ],
+  "referrerBreakdown": [ { "_id": "google.com", "count": 10 }, ... ]
+}
+```
 
 ### Redirect (Public)
 
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/:shortCode` | Redirect to original URL + log visit |
+#### GET `/:shortCode`
+- If no password → immediate redirect to original URL
+- If password set → returns branded HTML lock screen
+
+#### POST `/:shortCode`
+```
+Content-Type: application/x-www-form-urlencoded
+Body: password=user_entered_password
+```
+- Correct password → records visit + redirects
+- Wrong password → lock screen with error message
 
 ---
 
-## 📸 Sample Outputs
+## 📐 Assumptions Made
 
-### Login Page
-> Dark-themed glassmorphism login card with email/password fields, gradient submit button, and signup link.
+1. **Single-tenant per account** — Each user manages their own links. No team/shared workspace features were implemented.
+
+2. **No email verification** — Users can register with any email. No email verification flow was built (not required for a hackathon prototype).
+
+3. **Password protection is one-way** — Once a password is set on a link, there is no UI to remove or change it (it can be deleted and re-created). This was intentional to keep the flow simple.
+
+4. **Click tracking per redirect** — Each redirect (including password-verified ones) counts as one click. Bot/crawler filtering was not implemented.
+
+5. **Short codes are globally unique** — Two users cannot have the same custom alias. This is enforced at the database level with a unique index.
+
+6. **JWT stored in localStorage** — For simplicity, JWT tokens are stored in `localStorage`. In production, `httpOnly` cookies would be more secure.
+
+7. **Analytics use approximate geolocation** — Device and browser detection is done via User-Agent string parsing. No IP geolocation was used.
+
+8. **No rate limiting on redirects** — The redirect endpoint has no rate limiting. In a production environment, Redis-backed rate limiting per IP would be recommended.
+
+9. **Frontend environment assumed stable** — The `REACT_APP_BACKEND_URL` is set at build time. Dynamic switching between environments requires a re-build.
+
+10. **Vercel serverless limits apply** — The backend runs as Vercel serverless functions. Cold starts may cause initial latency. For high-traffic production use, a dedicated Node.js server (Railway, Render, etc.) would be better.
+
+---
+
+## 📸 Sample Output
 
 ### Dashboard
-> Stats cards showing Total Links, Total Redirects, Active Links. URL shortening form with advanced options (custom alias, expiry). Paginated table of shortened URLs with copy, QR, analytics, and delete actions.
+![Dashboard](https://urlshortener001.vercel.app)
 
-### QR Code Modal
-> Modal overlay with generated QR code SVG and PNG download button.
+The dashboard shows:
+- Shortener form with Custom Alias, Expiry Date, and Link Password options
+- Stats row: Total Links, Total Redirects, Active Links
+- Full-width links table with columns: Original Destination, Short URL (with 🔒 for protected), Created Date, Clicks, Expiry Date, Actions
 
 ### Analytics Page
-> Area chart showing 7-day click trends. Device and browser distribution with progress bars. Recent visits log table with timestamp, IP, device, browser, and referrer.
+Per-link analytics with:
+- Line chart: clicks over last 30 days
+- Pie chart: device breakdown (Desktop / Mobile / Tablet)
+- Bar chart: browser breakdown (Chrome / Firefox / Safari / Edge)
+- Table: top referrers
 
-### Database Entries
+### Password Lock Screen
+When visiting a password-protected short link, users see a branded lock screen with:
+- SnapLink logo
+- Animated lock icon (gradient cyan → purple)
+- Password input field
+- "Unlock & Redirect" button
+
+### Database Entries (MongoDB)
+
+**users collection:**
 ```json
-// User Document
 {
-  "_id": "ObjectId('...')",
+  "_id": "ObjectId(...)",
   "username": "johndoe",
   "email": "john@example.com",
-  "password": "$2b$10$... (bcrypt hash)",
-  "createdAt": "2026-06-11T10:00:00.000Z"
+  "password": "$2a$12$...(bcrypt hash)...",
+  "createdAt": "2026-06-13T00:00:00.000Z"
 }
+```
 
-// ShortUrl Document
+**shorturls collection:**
+```json
 {
-  "_id": "ObjectId('...')",
-  "originalUrl": "https://www.google.com/search?q=example",
-  "shortCode": "aB3kXz9",
-  "customAlias": null,
-  "user": "ObjectId('...')",
-  "clicks": 15,
-  "expiryDate": null,
+  "_id": "ObjectId(...)",
+  "user": "ObjectId(...)",
+  "originalUrl": "https://www.github.com/some/very/long/url",
+  "shortCode": "git-pass",
+  "customAlias": "git-pass",
+  "clicks": 2,
   "isActive": true,
-  "lastVisited": "2026-06-11T12:30:00.000Z",
-  "createdAt": "2026-06-11T10:05:00.000Z"
+  "expiryDate": null,
+  "password": "$2a$12$...(bcrypt hash)...",
+  "lastVisited": "2026-06-13T08:55:00.000Z",
+  "createdAt": "2026-06-13T07:30:00.000Z"
 }
+```
 
-// Visit Document
+**visits collection:**
+```json
 {
-  "_id": "ObjectId('...')",
-  "shortUrl": "ObjectId('...')",
-  "visitedAt": "2026-06-11T12:30:00.000Z",
-  "ipAddress": "::1",
-  "userAgent": "Mozilla/5.0 ...",
+  "_id": "ObjectId(...)",
+  "shortUrl": "ObjectId(...)",
+  "ipAddress": "103.x.x.x",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0...) Chrome/125.0.0.0",
   "device": "Desktop",
   "browser": "Chrome",
-  "referer": "Direct"
+  "referer": "Direct",
+  "createdAt": "2026-06-13T08:55:00.000Z"
 }
 ```
 
 ---
 
-## 📋 Assumptions Made
+## 📁 Project Structure
 
-1. **MongoDB** is available locally on default port 27017 (or via Docker).
-2. **Short codes** are 7-character nanoid strings; custom aliases are 3-30 alphanumeric characters.
-3. **JWT tokens** expire after 7 days; no refresh token mechanism is implemented.
-4. **URL validation** requires the protocol (http:// or https://) to be included.
-5. **Click analytics** are recorded per-visit (not per unique visitor) — every redirect counts as a click.
-6. **Device/Browser detection** is based on user-agent string parsing (server-side), not a third-party API.
-7. **Geolocation** is not implemented as it would require a third-party IP geolocation API.
-8. **Bulk CSV upload** is not implemented in this version.
-9. **The application** is designed for local development; production deployment would need HTTPS, proper secrets, and a domain.
-10. **Passwords** are hashed using bcrypt with 10 salt rounds.
+```
+Katomaran/
+├── .env.example                    # Root env template
+├── .gitignore
+├── docker-compose.yml              # Docker setup for both services
+├── README.md                       # This file
+│
+├── urlshortener-backend/           # Express.js REST API
+│   ├── server.js                   # App entry point, middleware, routes
+│   ├── vercel.json                 # Vercel deployment config
+│   ├── Dockerfile
+│   ├── .env.example
+│   ├── middleware/
+│   │   └── authMiddleware.js       # JWT verification middleware
+│   ├── models/
+│   │   ├── User.js                 # User schema (bcrypt pre-save hook)
+│   │   ├── ShortUrl.js             # URL schema (password hashing, comparePassword)
+│   │   └── Visit.js                # Visit/click tracking schema
+│   └── routes/
+│       ├── authRoutes.js           # /api/auth — register, login
+│       ├── urlRoutes.js            # /api/urls — CRUD for short URLs
+│       ├── analyticsRoutes.js      # /api/analytics — per-link analytics
+│       └── redirectRoutes.js       # /:shortCode — redirect + password lock screen
+│
+└── urlshortener-frontend/          # React SPA
+    ├── public/
+    │   ├── index.html
+    │   └── logo.png                # SnapLink app logo
+    └── src/
+        ├── index.js                # React entry point
+        ├── index.css               # Global CSS (design tokens, glassmorphism)
+        ├── App.js                  # Router + route definitions
+        ├── api/
+        │   └── api.js              # Axios instance + all API call functions
+        ├── components/
+        │   └── ProtectedRoute.js   # Auth guard component
+        └── pages/
+            ├── LoginPage.js        # Login form
+            ├── SignupPage.js       # Registration form
+            ├── AuthPages.css       # Auth page styles
+            ├── Dashboard.js        # Main dashboard (shorten + manage links)
+            ├── Dashboard.css       # Dashboard styles
+            ├── Analytics.js        # Per-link analytics with Recharts
+            ├── Analytics.css       # Analytics styles
+            ├── SettingsPage.js     # User profile & password settings
+            └── SettingsPage.css    # Settings styles
+```
 
 ---
 
-## 🎥 Demo Video
+## 🤝 Contributing
 
-> **[Add your Loom / YouTube video link here]**
->
-> The video demonstrates:
-> - User registration and login flow
-> - Creating short URLs with custom alias and expiry
-> - Copying short URLs and QR code generation
-> - Redirect flow and analytics tracking
-> - Dashboard overview and URL management
-> - Analytics page with charts and visit logs
+This project was built for a hackathon. PRs and issues are welcome after the submission deadline.
 
 ---
 
-## 📄 License
-
-ISC
-
----
-
-*This project is a part of a hackathon.*
+*This project is a part of a hackathon run by https://katomaran.com*
